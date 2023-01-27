@@ -1,38 +1,38 @@
 ---@class Inochi2D.fmt
-local Format = {}
+local fmt = {}
 
 ---Loads a puppet from a file
 ---@param path string
-function Format.inLoadPuppet(path)
+function fmt.inLoadPuppet(path)
 end
 
 ---Loads a puppet from memory
 ---@param data string
-function Format.inLoadPuppetFromMemory(data)
+function fmt.inLoadPuppetFromMemory(data)
 end
 
 ---Loads a JSON based puppet
 ---@param data string
-function Format.inLoadJSONPuppet(data)
+function fmt.inLoadJSONPuppet(data)
 end
 
 ---Loads a INP based puppet
 ---@param buffer string
-function Format.inLoadINPPuppet(buffer)
+function fmt.inLoadINPPuppet(buffer)
 end
 
 ---Writes Inochi2D puppet to file
 ---@param p Inochi2D.Puppet
-function Format.inWriteINPPuppet(p)
+function fmt.inWriteINPPuppet(p)
 end
 
 ---Writes a puppet to file
 ---@param p Inochi2D.Puppet
-function Format.inWriteJSONPuppet(p)
+function fmt.inWriteJSONPuppet(p)
 end
 
-Format.IN_TEX_PNG = 0 -- PNG encoded Inochi2D texture
-Format.IN_TEX_TGA = 1 -- TGA encoded Inochi2D texture
-Format.IN_TEX_BC7 = 2 -- BC7 encoded Inochi2D texture
+fmt.IN_TEX_PNG = 0 -- PNG encoded Inochi2D texture
+fmt.IN_TEX_TGA = 1 -- TGA encoded Inochi2D texture
+fmt.IN_TEX_BC7 = 2 -- BC7 encoded Inochi2D texture
 
-return Format
+return fmt
