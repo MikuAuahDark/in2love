@@ -73,7 +73,45 @@ function UsageRights:new()
 	self.requireAttribution = false
 end
 
+function UsageRights:serialize()
+	return {
+		allowedUsers = self.allowedUsers,
+		allowViolence = self.allowViolence,
+		allowSexual = self.allowSexual,
+		allowCommercial = self.allowCommercial,
+		allowRedistribution = self.allowRedistribution,
+		allowModification = self.allowModification,
+		requireAttribution = self.requireAttribution
+	}
+end
+
 ---@cast UsageRights +fun():Inochi2D.PuppetUsageRights
+function UsageRights.deserialize(t)
+	local rights = UsageRights()
+	rights.allowedUsers = t.allowedUsers or rights.allowedUsers
+
+	if t.allowViolence ~= nil then
+		rights.allowViolence = not not t.allowViolence
+	end
+
+	if t.allowSexual ~= nil then
+		rights.allowSexual = not not t.allowSexual
+	end
+
+	if t.allowCommercial ~= nil then
+		rights.allowCommercial = not not t.allowCommercial
+	end
+
+	rights.allowRedistribution = t.allowRedistribution or rights.allowRedistribution
+	rights.allowModification = t.allowModification or rights.allowModification
+
+	if t.requireAttribution ~= nil then
+		rights.requireAttribution = not not t.requireAttribution
+	end
+
+	return rights
+end
+
 Puppet.UsageRights = UsageRights
 
 ---Puppet meta information
@@ -103,6 +141,13 @@ function Meta:serialize()
 	return {
 		name = self.name,
 		version = self.version,
+		rigger = self.rigger,
+		artist = self.artist,
+		rights = self.rights and self.rights:serialize(),
+		copyright = self.copyright,
+		licenseURL = self.licenseURL,
+		contact = self.contact,
+		reference = self.reference,
 		-- Handle Lua 1-based index
 		thumbnailId = self.thumbnailId ~= Puppet.NO_THUMBNAIL and self.thumbnailId - 1 or Puppet.NO_THUMBNAIL,
 		preservePixels = self.preservePixels
@@ -114,7 +159,19 @@ function Meta.deserialize(t)
 	local meta = Meta()
 	meta.name = t.name
 	meta.version = t.version
+	meta.rigger = t.rigger
+	meta.artist = t.artist
 
+	if t.rights then
+		meta.rights = UsageRights.deserialize(t.rights)
+	end
+
+	meta.copyright = t.copyright
+	meta.licenseURL = t.licenseURL
+	meta.contact = t.contact
+	meta.reference = t.reference
+
+	-- Handle Lua 1-based indexing
 	if t.thumbnailId and t.thumbnailId ~= Puppet.NO_THUMBNAIL then
 		meta.thumbnailId = t.thumbnailId - 1
 	end
