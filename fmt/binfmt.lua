@@ -1,4 +1,4 @@
----@class Inochi2D.Format.Binfmt
+---@class Inochi2D.Binfmt
 local Binfmt = {}
 
 ---Entrypoint magic bytes that define this is an Inochi2D puppet

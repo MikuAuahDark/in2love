@@ -16,7 +16,7 @@ local Util = require(path..".util")
 ---@field public root Inochi2D.Node The root node of the puppet
 ---@field public parameters Inochi2D.Parameters[] Parameters
 ---@field public automation Inochi2D.Automation[] Parameters
----@field public textureSlots (Inochi2D.Texture|false)[] INP Texture slots for this puppet
+---@field public textureSlots (love.Texture|false)[] INP Texture slots for this puppet
 ---@field public extData table<string,string> Extended vendor data
 ---@field public renderParameters boolean Whether parameters should be rendered
 ---@field public enableDrivers boolean Whether drivers should run
@@ -482,8 +482,10 @@ end
 ---Updates the texture state for all texture slots.
 function Puppet:updateTextureState()
 	for _, texture in ipairs(self.textureSlots) do
-		-- TODO: Should `textureSlots` be `love.Texture[]` or some abstraction?
-		texture:setFilter(self.meta.preservePixels and "nearest" or "linear")
+		if texture then
+			local filt = self.meta.preservePixels and "nearest" or "linear"
+			texture:setFilter(filt, filt)
+		end
 	end
 end
 
@@ -524,7 +526,7 @@ function Puppet:findNodesType(n, type)
 end
 
 ---Adds a texture to a new slot if it doesn't already exist within this puppet
----@param texture Inochi2D.Texture
+---@param texture love.Texture
 function Puppet:addTextureToSlot(texture)
 	-- NOTE: This deviate from the original code
 
@@ -551,7 +553,7 @@ function Puppet:populateTextureSlots()
 end
 
 ---Sets thumbnail of this puppet
----@param texture Inochi2D.Texture
+---@param texture love.Texture
 function Puppet:setThumbnail(texture)
 	if self.meta.thumbnailId == Puppet.NO_THUMBNAIL then
 		self.meta.thumbnailId = self:addTextureToSlot(texture)
@@ -563,7 +565,7 @@ end
 ---Gets the texture slot index for a texture
 ---
 ---returns -1 if none was found
----@param texture Inochi2D.Texture
+---@param texture love.Texture
 function Puppet:getTextureSlotIndexFor(texture)
 	return Util.index(self.textureSlots, texture) or -1
 end
