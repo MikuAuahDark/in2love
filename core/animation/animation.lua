@@ -7,7 +7,7 @@ local Object = require(path..".lib.classic")
 ---@field public timestep number The timestep of each frame
 ---@field public additive boolean Whether the animation is additive. Additive animations will not replace main animations, but add their data on top of the running main animation.
 ---@field public animationWeight number The weight of the animation. This is only relevant for additive animations
----@field public names Inochi2D.AnimationLanes[] All of the animation lanes in this animation
+---@field public lanes Inochi2D.AnimationLane[] All of the animation lanes in this animation
 ---@field public length integer Length in frames
 ---@field public leadIn integer Time where the lead-in ends
 ---@field public leadOut integer Time where the lead-out starts

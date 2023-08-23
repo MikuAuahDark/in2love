@@ -4,7 +4,7 @@ local path = (...):sub(1, -string.len(".core.puppet") - 1)
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node_class")
----@type Inochi2D.Util
+---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
 ---@class Inochi2D.Puppet: Inochi2D.Object

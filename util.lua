@@ -2,7 +2,7 @@ local path = (...):sub(1, -string.len(".util") - 1)
 
 local sort = require(path..".lib.sort")
 
----@class Inochi2D.Util
+---@class Inochi2D.UtilModule
 local Util = {}
 
 local hasClear, clear = pcall(require, "table.clear")

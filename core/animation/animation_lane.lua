@@ -6,7 +6,7 @@ local Object = require(path..".lib.classic")
 local AnimationParamRef = require(path..".core.animation.animation_parameter_ref")
 ---@type Inochi2D.Keyframe_Class
 local Keyframe = require(path..".core.animation.keyframe")
----@type Inochi2D.Util
+---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
 ---@class Inochi2D.AnimationLane: Inochi2D.Object, Inochi2D.ISerializable
