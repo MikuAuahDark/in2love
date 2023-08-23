@@ -200,8 +200,16 @@ function Transform:serialize()
 	}
 end
 
-function Transform.deserialize(t)
-	return Transform(t.trans, t.rot, t.scale)
+function Transform:deserialize(t)
+	self.translation = t.trans
+	self.rotation = t.rot
+	self.scale = t.scale
+end
+
+function Transform:clone()
+	local tnew = Transform(self.translation, self.rotation, self.scale)
+	tnew:update()
+	return tnew
 end
 
 ---@class Inochi2D.Transform2D: Inochi2D.Object
@@ -247,4 +255,7 @@ end
 ---@cast Transform2D +fun(translate:Inochi2D.tuple2?,rotation:number?,scale:Inochi2D.tuple2?):Inochi2D.Transform2D
 Transform.D2 = Transform2D
 
+---@alias Inochi2D.TransformModule
+---| Inochi2D.Transform
+---| +fun(translation:Inochi2D.tuple3?,rotation:Inochi2D.tuple3?,scale:Inochi2D.tuple2?):Inochi2D.Transform
 return Transform

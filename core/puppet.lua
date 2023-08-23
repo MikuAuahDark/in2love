@@ -2,6 +2,8 @@ local path = (...):sub(1, -string.len(".core.puppet") - 1)
 
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
+---@type Inochi2D.Node_Class
+local Node = require(path..".core.nodes.node_class")
 ---@type Inochi2D.Util
 local Util = require(path..".util")
 
@@ -270,7 +272,7 @@ function Puppet:scanPartsRecurse(node, driversOnly)
 		-- Non-part nodes just need to be recursed through, they don't draw anything.
 	end
 
-	for _, child in ipairs(node.children) do
+	for _, child in ipairs(node.children_) do
 		self:scanPartsRecurse(child, driversOnly)
 	end
 end
@@ -292,7 +294,7 @@ function Puppet:scanParts(node, reparent)
 	if reparent then
 		if self.puppetRootNode then
 			self.puppetRootNode:clearChildren()
-			node.parent = self.puppetRootNode
+			node.parent_ = self.puppetRootNode
 		end
 	end
 end
@@ -300,7 +302,7 @@ end
 ---@param a Inochi2D.Node
 ---@param b Inochi2D.Node
 local function puppetSelfSortComparator(a, b)
-	return a.zSort > b.zSort
+	return a:zSort() > b:zSort()
 end
 
 ---@private
@@ -318,7 +320,7 @@ function Puppet:findNodeByName(n, name)
 	end
 
 	-- Recurse through children
-	for _, child in ipairs(n.children) do
+	for _, child in ipairs(n.children_) do
 		local c = self:findNodeByName(child, name)
 		if c then
 			return c
@@ -333,12 +335,12 @@ end
 ---@param uuid integer
 function Puppet:findNodeByUUID(n, uuid)
 	-- Name matches!
-	if n.uuid == uuid then
+	if n.uuid_ == uuid then
 		return n
 	end
 
 	-- Recurse through children
-	for _, child in ipairs(n.children) do
+	for _, child in ipairs(n.children_) do
 		local c = self:findNodeByUUID(child, uuid)
 		if c then
 			return c
@@ -453,7 +455,7 @@ function Puppet:draw()
 	self:selfSort()
 
 	for _, rootPart in ipairs(self.rootParts) do
-		if rootPart.renderEnabled then
+		if rootPart:renderEnabled() then
 			rootPart:drawOne()
 		end
 	end
@@ -516,7 +518,7 @@ function Puppet:findNodesType(n, type)
 	end
 
 	-- Recurse through children
-	for _, child in ipairs(n.children) do
+	for _, child in ipairs(n.children_) do
 		for c in self:findNodesType(child, type) do
 			nodes[#nodes + 1] = c
 		end
@@ -627,8 +629,8 @@ function Puppet:getAnimations()
 	return self.animations
 end
 
----@alias Inochi2D.PuppetModule
+---@alias Inochi2D.Puppet_Class
 ---| Inochi2D.Puppet
 ---| fun(root:Inochi2D.Node?):Inochi2D.Puppet
----@cast Puppet +Inochi2D.PuppetModule
+---@cast Puppet +Inochi2D.Puppet_Class
 return Puppet
