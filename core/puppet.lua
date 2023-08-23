@@ -16,7 +16,7 @@ local Util = require(path..".util")
 ---@field public meta Inochi2D.PuppetMeta Meta information about this puppet
 ---@field public physics Inochi2D.PuppetPhysics Global physics settings for this puppet
 ---@field public root Inochi2D.Node The root node of the puppet
----@field public parameters Inochi2D.Parameters[] Parameters
+---@field public parameters Inochi2D.Parameter[] Parameters
 ---@field public automation Inochi2D.Automation[] Parameters
 ---@field public textureSlots (love.Texture|false)[] INP Texture slots for this puppet
 ---@field public extData table<string,string> Extended vendor data
@@ -54,7 +54,7 @@ Puppet.NO_THUMBNAIL = 4294967295;
 ---Modification is allowed with redistribution, see `allowedRedistribution` for redistribution terms.
 ---| "allowRedistribute"
 
----@class Inochi2D.PuppetUsageRights: Inochi2D.Object
+---@class Inochi2D.PuppetUsageRights: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public allowedUsers Inochi2D.PuppetAllowedUsers Who is allowed to use the puppet?
 ---@field public allowViolence boolean Whether violence content is allowed
 ---@field public allowSexual boolean Whether sexual content is allowed
@@ -87,39 +87,43 @@ function UsageRights:serialize()
 	}
 end
 
----@cast UsageRights +fun():Inochi2D.PuppetUsageRights
-function UsageRights.deserialize(t)
-	local rights = UsageRights()
-	rights.allowedUsers = t.allowedUsers or rights.allowedUsers
+function UsageRights:deserialize(t)
+	if t.allowedUsers ~= nil then
+		self.allowedUsers = t.allowedUsers
+	end
 
 	if t.allowViolence ~= nil then
-		rights.allowViolence = not not t.allowViolence
+		self.allowViolence = not not t.allowViolence
 	end
 
 	if t.allowSexual ~= nil then
-		rights.allowSexual = not not t.allowSexual
+		self.allowSexual = not not t.allowSexual
 	end
 
 	if t.allowCommercial ~= nil then
-		rights.allowCommercial = not not t.allowCommercial
+		self.allowCommercial = not not t.allowCommercial
 	end
 
-	rights.allowRedistribution = t.allowRedistribution or rights.allowRedistribution
-	rights.allowModification = t.allowModification or rights.allowModification
+	if t.allowRedistribution ~= nil then
+		self.allowRedistribution = assert(t.allowRedistribution)
+	end
+
+	if t.allowModification ~= nil then
+		self.allowModification = t.allowModification
+	end
 
 	if t.requireAttribution ~= nil then
-		rights.requireAttribution = not not t.requireAttribution
+		self.requireAttribution = not not t.requireAttribution
 	end
-
-	return rights
 end
 
+---@cast UsageRights +fun():Inochi2D.PuppetUsageRights
 Puppet.UsageRights = UsageRights
 
 ---Puppet meta information
----@class Inochi2D.PuppetMeta: Inochi2D.Object
+---@class Inochi2D.PuppetMeta: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public name string Name of the puppet
----@field public version string Version of the Inochi2D spec that was used for creating this model
+---@field public version_ string Version of the Inochi2D spec that was used for creating this model
 ---@field public rigger string? Rigger(s) of the puppet
 ---@field public artist string? Artist(s) of the puppet
 ---@field public rights Inochi2D.PuppetUsageRights? Usage Rights of the puppet
@@ -134,7 +138,14 @@ local Meta = Object:extend()
 ---@private
 function Meta:new()
 	self.name = ""
-	self.version = "1.0-alpha"
+	self.version_ = "1.0-alpha"
+	self.rigger = nil
+	self.artist = nil
+	self.rights = nil
+	self.copyright = nil
+	self.licenseURL = nil
+	self.contact = nil
+	self.reference = nil
 	self.thumbnailId = Puppet.NO_THUMBNAIL
 	self.preservePixels = false
 end
@@ -142,7 +153,7 @@ end
 function Meta:serialize()
 	return {
 		name = self.name,
-		version = self.version,
+		version = self.version_,
 		rigger = self.rigger,
 		artist = self.artist,
 		rights = self.rights and self.rights:serialize(),
@@ -156,39 +167,38 @@ function Meta:serialize()
 	}
 end
 
----@cast Meta +fun():Inochi2D.PuppetMeta
-function Meta.deserialize(t)
-	local meta = Meta()
-	meta.name = t.name
-	meta.version = t.version
-	meta.rigger = t.rigger
-	meta.artist = t.artist
+function Meta:deserialize(t)
+	self.name = assert(t.name)
+	self.version_ = assert(t.version)
+	self.rigger = t.rigger
+	self.artist = t.artist
 
 	if t.rights then
-		meta.rights = UsageRights.deserialize(t.rights)
+		self.rights = UsageRights()
+		self.rights:deserialize(t.rights)
 	end
 
-	meta.copyright = t.copyright
-	meta.licenseURL = t.licenseURL
-	meta.contact = t.contact
-	meta.reference = t.reference
+	self.copyright = t.copyright
+	self.licenseURL = t.licenseURL
+	self.contact = t.contact
+	self.reference = t.reference
 
-	-- Handle Lua 1-based indexing
 	if t.thumbnailId and t.thumbnailId ~= Puppet.NO_THUMBNAIL then
-		meta.thumbnailId = t.thumbnailId - 1
+		self.thumbnailId = t.thumbnailId
 	end
 
 	if t.preservePixels ~= nil then
-		meta.preservePixels = not not t.preservePixels
+		self.preservePixels = not not t.preservePixels
 	end
 
-	return meta
+	return self
 end
 
+---@cast Meta +fun():Inochi2D.PuppetMeta
 Puppet.Meta = Meta
 
 ---Puppet physics settings
----@class Inochi2D.PuppetPhysics: Inochi2D.Object
+---@class Inochi2D.PuppetPhysics: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public pixelsPerMeter number
 ---@field public gravity number
 local Physics = Object:extend()
@@ -206,27 +216,29 @@ function Physics:serialize()
 	}
 end
 
----@cast Physics +fun():Inochi2D.PuppetPhysics
-function Physics.deserialize(t)
-	local physics = Physics()
-
-	if t.pixelsPerMeter then
-		physics.pixelsPerMeter = t.pixelsPerMeter
+function Physics:deserialize(t)
+	if t.pixelsPerMeter ~= nil then
+		self.pixelsPerMeter = assert(tonumber(t.pixelsPerMeter))
 	end
 
-	if t.gravity then
-		physics.gravity = t.gravity
+	if t.gravity ~= nil then
+		self.gravity = assert(tonumber(t.gravity))
 	end
 
-	return physics
+	return self
 end
 
+---@cast Physics +fun():Inochi2D.PuppetPhysics
 Puppet.Physics = Physics
 
 ---@param root Inochi2D.Node?
 ---@private
 function Puppet:new(root)
 	self.puppetRootNode = Node(self)
+	self.rootParts = {}
+	self.drivers = {}
+	self.drivenParameters = {}
+	self.animations = {}
 	self.meta = Meta()
 	self.physics = Physics()
 	self.player = AnimationPlayer(self)
@@ -423,17 +435,15 @@ function Puppet:findParameterIndex(name)
 end
 
 ---Returns a parameter by UUID
----
----**NOTE**: This returns 1-based index!
 ---@param uuid integer
 function Puppet:findParameter(uuid)
-	for i, parameter in ipairs(self.parameters) do
+	for _, parameter in ipairs(self.parameters) do
 		if parameter.uuid == uuid then
-			return i
+			return parameter
 		end
 	end
 
-	return -1
+	return nil
 end
 
 ---Gets if a node is bound to ANY parameter.

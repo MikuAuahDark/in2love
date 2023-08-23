@@ -64,4 +64,47 @@ function Util.serializeDictionary(tab)
 	return result
 end
 
+---@param a number
+---@param b number
+---@param t number
+function Util.lerp(a, b, t)
+	return a * (1 - t) + b * t
+end
+
+---Hermite lerpolation (cubic hermite spline).
+---From inmath.
+---@param x number
+---@param tx number
+---@param y number
+---@param ty number
+---@param t number
+function Util.hermite(x, tx, y, ty, t)
+	local h1 = 2 * t ^ 3 - 3 * t ^ 2 + 1
+	local h2 = -2* t ^ 3 + 3 * t ^ 2
+	local h3 = t ^ 3 - 2 * t ^ 2 + t
+	local h4 = t ^ 3 - t ^ 2
+	return h1 * x + h3 * tx + h2 * y + h4 * ty
+end
+
+---Cubic interpolation.
+---From inmath.
+---@param p0 number
+---@param p1 number
+---@param p2 number
+---@param p3 number
+---@param t number
+function Util.cubic(p0, p1, p2, p3, t)
+	local a = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3
+	local b = p0 - 2.5 * p1 + 2 * p2 - 0.5 * p3
+	local c = -0.5 * p0 + 0.5 * p2
+	return a * (t ^ 3) + b * (t ^ 2) + c * t + p1
+end
+
+---@param value number
+---@param min number
+---@param max number
+function Util.clamp(value, min, max)
+	return math.min(math.max(value, min), max)
+end
+
 return Util
