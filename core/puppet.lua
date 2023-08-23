@@ -2,6 +2,8 @@ local path = (...):sub(1, -string.len(".core.puppet") - 1)
 
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
+---@type Inochi2D.AnimationPlayer_Class
+local AnimationPlayer = require(path..".core.animation")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node_class")
 ---@type Inochi2D.UtilModule
@@ -264,7 +266,7 @@ function Puppet:scanPartsRecurse(node, driversOnly)
 	if node:is(Driver) then
 		---@cast node Inochi2D.Driver
 		self.drivers[#self.drivers + 1] = node
-		for _, param in ipairs(node.getAffectedParameters()) do
+		for _, param in ipairs(node:getAffectedParameters()) do
 			self.drivenParameters[param] = node
 		end
 	elseif not driversOnly then
@@ -284,7 +286,7 @@ function Puppet:scanPartsRecurse(node, driversOnly)
 		-- Non-part nodes just need to be recursed through, they don't draw anything.
 	end
 
-	for _, child in ipairs(node.children_) do
+	for _, child in ipairs(node:children()) do
 		self:scanPartsRecurse(child, driversOnly)
 	end
 end
@@ -306,7 +308,7 @@ function Puppet:scanParts(node, reparent)
 	if reparent then
 		if self.puppetRootNode then
 			self.puppetRootNode:clearChildren()
-			node.parent_ = self.puppetRootNode
+			node:parent(self.puppetRootNode)
 		end
 	end
 end
@@ -332,7 +334,7 @@ function Puppet:findNodeByName(n, name)
 	end
 
 	-- Recurse through children
-	for _, child in ipairs(n.children_) do
+	for _, child in ipairs(n:children()) do
 		local c = self:findNodeByName(child, name)
 		if c then
 			return c
@@ -347,12 +349,12 @@ end
 ---@param uuid integer
 function Puppet:findNodeByUUID(n, uuid)
 	-- Name matches!
-	if n.uuid_ == uuid then
+	if n:uuid() == uuid then
 		return n
 	end
 
 	-- Recurse through children
-	for _, child in ipairs(n.children_) do
+	for _, child in ipairs(n:children()) do
 		local c = self:findNodeByUUID(child, uuid)
 		if c then
 			return c
@@ -374,7 +376,8 @@ function Puppet:findNode(n, data)
 end
 
 ---Updates the nodes
-function Puppet:update()
+---@param delta number?
+function Puppet:update(delta)
 	-- Rest additive offsets
 	for _, parameter in ipairs(self.parameters) do
 		parameter:preUpdate()
@@ -388,7 +391,7 @@ function Puppet:update()
 	self.root:beginUpdate()
 
 	-- Step the animations
-	self.player:step()
+	self.player:step(delta)
 
 	if self.renderParameters then
 		-- Update parameters
@@ -513,7 +516,7 @@ end
 
 ---Returns all the parts in the puppet
 function Puppet:getAllParts()
-	return self:findNodesType(root, Part)
+	return self:findNodesType(self.root, Part)
 end
 
 ---@generic T: Inochi2D.Node
@@ -528,7 +531,7 @@ function Puppet:findNodesType(n, type)
 	end
 
 	-- Recurse through children
-	for _, child in ipairs(n.children_) do
+	for _, child in ipairs(n:children()) do
 		for c in self:findNodesType(child, type) do
 			nodes[#nodes + 1] = c
 		end

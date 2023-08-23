@@ -56,7 +56,6 @@ function Node:resetMask()
 	end
 end
 
----@protected
 function Node:serialize()
 	local result = {
 		uuid = self.uuid_,

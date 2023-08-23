@@ -12,3 +12,14 @@ end
 ---@return boolean
 function Object:is(other)
 end
+
+---@class Inochi2D.ISerializable
+local ISerializable = {}
+
+---@return table<string, any>
+function ISerializable:serialize()
+end
+
+---@param t table<string, any>
+function ISerializable:deserialize(t)
+end
