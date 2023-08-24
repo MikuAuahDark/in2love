@@ -42,12 +42,33 @@ function Util.index(t, v)
 	return nil
 end
 
+function Util.isArray(t)
+	for k in pairs(t) do
+		if type(k) ~= "number" then
+			return false
+		end
+	end
+
+	return true
+end
+
 ---@generic T
 ---@param tab T[]
 function Util.serializeArray(tab)
 	local result = {}
+
 	for _, v in ipairs(tab) do
-		result[#result + 1] = v:serialize()
+		if type(v) == "table" then
+			if type(v.serialize) == "function" then
+				result[#result + 1] = v:serialize()
+			elseif Util.isArray(v) then
+				result[#result+1] = Util.serializeArray(v)
+			else
+				result[#result+1] = v
+			end
+		else
+			result[#result+1] = v
+		end
 	end
 
 	return result
@@ -64,9 +85,33 @@ function Util.serializeDictionary(tab)
 	return result
 end
 
----@param a number
----@param b number
+---@generic T
+---@param tab T[]
+function Util.reverseArray(tab)
+	local len = #tab
+	for i = 1, math.floor(len / 2) do
+		tab[i], tab[len - i + 1] = tab[len - i + 1], tab[i]
+	end
+end
+
+---@generic T
+---@param tab T[]
+---@return T[]
+function Util.copyArray(tab)
+	local result = {}
+
+	for k, v in ipairs(tab) do
+		result[k] = v
+	end
+
+	return result
+end
+
+---@generic T
+---@param a T
+---@param b T
 ---@param t number
+---@return T
 function Util.lerp(a, b, t)
 	return a * (1 - t) + b * t
 end
