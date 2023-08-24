@@ -152,4 +152,8 @@ function Util.clamp(value, min, max)
 	return math.min(math.max(value, min), max)
 end
 
+function Util.isVec2(value)
+	return type(value[1]) == "number" and type(value[2]) == "number"
+end
+
 return Util
