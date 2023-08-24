@@ -122,7 +122,7 @@ end
 ---@param puppet Inochi2D.Puppet
 function AnimationLane:finalize(puppet)
 	if self.paramRef then
-		self.paramRef.targetParam = puppet:findParameter(refuuid)
+		self.paramRef.targetParam = puppet:findParameter(self.refuuid)
 	end
 end
 

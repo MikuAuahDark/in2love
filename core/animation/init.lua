@@ -316,7 +316,7 @@ function AnimationPlayer:stepMain(delta)
 		-- Iterate and step all the lanes in the current animation
 		for _, lane in ipairs(self.currAnimation.animation.lanes) do
 			local value = lane:get(currFrame)
-			lane.paramRef.targetParam.value.vector[lane.paramRef.targetAxis] = lane.paramRef.targetParam:unmapAxis(lane.paramRef.targetAxis, value)
+			lane.paramRef.targetParam.value[lane.paramRef.targetAxis + 1] = lane.paramRef.targetParam:unmapAxis(lane.paramRef.targetAxis, value)
 		end
 
 		-- Crossfade T
@@ -337,8 +337,8 @@ function AnimationPlayer:stepMain(delta)
 			else
 				-- Fading logic
 				for _, lane in ipairs(self.currAnimation.animation.lanes) do
-					local value = Util.lerp(lane:get(currFrame), lane.paramRef.targetParam.defaults.vector[lane.paramRef.targetAxis], ct)
-					lane.paramRef.targetParam.value.vector[lane.paramRef.targetAxis] = lane.paramRef.targetParam:unmapAxis(lane.paramRef.targetAxis, value);
+					local value = Util.lerp(lane:get(currFrame), lane.paramRef.targetParam.defaults[lane.paramRef.targetAxis + 1], ct)
+					lane.paramRef.targetParam.value[lane.paramRef.targetAxis + 1] = lane.paramRef.targetParam:unmapAxis(lane.paramRef.targetAxis, value);
 				end
 			end
 		elseif self.prevAnimation then
@@ -353,8 +353,8 @@ function AnimationPlayer:stepMain(delta)
 			else
 				-- Crossfade logic
 				for _, lane in ipairs(self.currAnimation.animation.lanes) do
-					local value = Util.lerp(lane:get(prevCurrFrame), lane.paramRef.targetParam.value.vector[lane.paramRef.targetAxis], ct)
-					lane.paramRef.targetParam.value.vector[lane.paramRef.targetAxis] = lane.paramRef.targetParam:unmapAxis(lane.paramRef.targetAxis, value);
+					local value = Util.lerp(lane:get(prevCurrFrame), lane.paramRef.targetParam.value[lane.paramRef.targetAxis + 1], ct)
+					lane.paramRef.targetParam.value[lane.paramRef.targetAxis + 1] = lane.paramRef.targetParam:unmapAxis(lane.paramRef.targetAxis, value);
 				end
 			end
 		end

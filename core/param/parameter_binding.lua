@@ -139,7 +139,7 @@ function ParameterBinding:getName()
 end
 
 ---Gets the node of the binding
----@return Inochi2D.Node?
+---@return Inochi2D.Node
 function ParameterBinding:getNode()
 	error("need to override getNode")
 end
