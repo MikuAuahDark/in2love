@@ -16,10 +16,10 @@ end
 ---@class Inochi2D.ISerializable
 local ISerializable = {}
 
----@return table<string, any>
+---@return table<string, any>|any[]
 function ISerializable:serialize()
 end
 
----@param t table<string, any>
+---@param t table<string, any>|any[]
 function ISerializable:deserialize(t)
 end

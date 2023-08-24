@@ -2,6 +2,8 @@ local path = (...):sub(1, -string.len(".core.param.parameter_binding_impl") - 1)
 
 ---@type Inochi2D.ParameterBinding
 local ParameterBinding = require(path..".core.param.parameter_binding")
+---@type Inochi2D.BindTarget_Class
+local BindTarget = require(path..".core.param.bind_target")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -59,7 +61,7 @@ function ParameterBindingImpl:getIsSet()
 	return self.isSet_
 end
 
-function ParameterBindingImpl:serializeSelf()
+function ParameterBindingImpl:serialize()
 	return  {
 		node = self.target.node and self.target.node.uuid or 4294967295,
 		param_name = self.target.paramName,
@@ -69,7 +71,7 @@ function ParameterBindingImpl:serializeSelf()
 	}
 end
 
----Derivator must deserialize self.values themselves later
+---Derived class must deserialize self.values themselves later
 ---@param t table<string, any>
 function ParameterBindingImpl:deserialize(t)
 	self.nodeRef = assert(t.node)
@@ -619,7 +621,7 @@ end
 
 ---@param leftKeypoint Inochi2D.vec2
 ---@param offset Inochi2D.vec2
-function ParameterBindingImpl:interpolateCobic(leftKeypoint, offset)
+function ParameterBindingImpl:interpolateCubic(leftKeypoint, offset)
 	local xkp = leftKeypoint[1]
 	local xlen = #self.values - 1
 

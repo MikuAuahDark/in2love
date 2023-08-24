@@ -2,10 +2,9 @@ local path = (...):sub(1, -string.len(".core.param.value_parameter_binding") - 1
 
 ---@type Inochi2D.ParameterBindingImpl_Class
 local ParameterBindingImpl = require(path..".core.param.parameter_binding_impl")
----@type Inochi2D.UtilModule
-local Util = require(path..".util")
 
 ---@class Inochi2D.ValueParameterBinding: Inochi2D.ParameterBindingImpl
+---@field public values number[][] The value at each 2D keypoint
 local ValueParameterBinding = ParameterBindingImpl:extend()
 
 ---@param parameter Inochi2D.Parameter
