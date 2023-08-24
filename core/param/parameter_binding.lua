@@ -158,6 +158,7 @@ function ParameterBinding:isCompatibleWithNode(other)
 end
 
 ---Gets and sets the interpolation mode
+---@param mode Inochi2D.InterpolateMode
 ---@return Inochi2D.InterpolateMode
 ---@overload fun(self:Inochi2D.ParameterBinding):Inochi2D.InterpolateMode
 ---@overload fun(self:Inochi2D.ParameterBinding,mode:Inochi2D.InterpolateMode)

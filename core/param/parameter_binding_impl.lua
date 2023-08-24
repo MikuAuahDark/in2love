@@ -14,7 +14,7 @@ local Util = require(path..".util")
 ---@field public isSet_ boolean[][] Whether the value at each 2D keypoint is user-set
 local ParameterBindingImpl = ParameterBinding:extend()
 
----When overriding, please call this first!
+---For derived class, please call this!
 ---@param parameter Inochi2D.Parameter
 ---@param targetNode Inochi2D.Node?
 ---@param paramName string?
@@ -110,7 +110,8 @@ function ParameterBindingImpl:clear()
 	end
 end
 
----Clear the value of derived type here
+---Clear the value of derived type here.
+---It's defined weirdly due to Lua lacking "ref" syntax.
 ---@generic T
 ---@param i T
 ---@return T
@@ -616,4 +617,217 @@ function ParameterBindingImpl:interpolateLinear(leftKeypoint, offset)
 	return Util.lerp(p0, p1, offset[1])
 end
 
+---@param leftKeypoint Inochi2D.vec2
+---@param offset Inochi2D.vec2
+function ParameterBindingImpl:interpolateCobic(leftKeypoint, offset)
+	local xkp = leftKeypoint[1]
+	local xlen = #self.values - 1
+
+	if self.parameter.isVec2 then
+		local pOut = {}
+
+		local ykp = leftKeypoint[2]
+		local ylen = #self.values[1] - 1
+
+		for y = 0, 3 do
+			local yp = Util.clamp(ykp + y - 1, 0, ylen) + 1
+			local p00 = self.values[math.max(xkp - 1, 0) + 1][yp]
+			local p01 = self.values[xkp + 1][yp]
+			local p02 = self.values[xkp + 2][yp]
+			local p03 = self.values[math.min(xkp + 2, xlen) + 1][yp]
+			pOut[y + 1] = Util.cubic(p00, p01, p02, p03, offset[1])
+		end
+
+		return Util.cubic(pOut[1], pOut[2], pOut[3], pOut[4], offset[2])
+	else
+		local p0 = self.values[math.max(xkp - 1, 0) + 1][1]
+		local p1 = self.values[xkp + 1][1]
+		local p2 = self.values[xkp + 2][1]
+		local p3 = self.values[math.min(xkp + 2, xlen) + 1][1]
+		return Util.cubic(p0, p1, p2, p3, offset[1])
+	end
+end
+
+---@param leftKeypoint Inochi2D.vec2
+---@param offset Inochi2D.vec2
+function ParameterBindingImpl:apply(leftKeypoint, offset)
+	self:applyToTarget(self:interpolate(leftKeypoint, offset))
+end
+
+---@param axis integer
+---@param index integer
+function ParameterBindingImpl:insertKeypoints(axis, index)
+	assert(axis == 0 or axis == 1)
+
+	if axis == 0 then
+		local yCount = self.parameter:axisPointCount(1)
+
+		local t = {}
+		local s = {}
+		for i = 1, yCount do
+			t[i] = self:newObject()
+			s[i] = false
+		end
+
+		table.insert(self.values, index + 1, t)
+		table.insert(self.isSet_, index + 1, s)
+	elseif axis == 1 then
+		for _, i in ipairs(self.values) do
+			table.insert(i, index + 1, self:newObject())
+		end
+
+		for _, i in ipairs(self.isSet_) do
+			table.insert(i, index + 1, false)
+		end
+	end
+
+	self:reInterpolate()
+end
+
+-- Due to Lua lacking constructor for primitive types, derived class must implement this.
+function ParameterBindingImpl:newObject()
+	error("need to override newObject")
+	return nil
+end
+
+function ParameterBindingImpl:moveKeypoints(axis, oldindex, newindex)
+	assert(axis == 0 or axis == 1)
+
+	if axis == 0 then
+		self.values[oldindex + 1], self.values[newindex + 1] = self.values[newindex + 1], self.values[oldindex + 1]
+		self.isSet_[oldindex + 1], self.isSet_[newindex + 1] = self.isSet_[newindex + 1], self.isSet_[oldindex + 1]
+	elseif axis == 1 then
+		for _, i in ipairs(self.values) do
+			i[oldindex + 1], i[newindex + 1] = i[newindex + 1], i[oldindex + 1]
+		end
+
+		for _, i in ipairs(self.isSet_) do
+			i[oldindex + 1], i[newindex + 1] = i[newindex + 1], i[oldindex + 1]
+		end
+	end
+
+	self:reInterpolate()
+end
+
+---@param axis integer
+---@param index integer
+function ParameterBindingImpl:deleteKeypoints(axis, index)
+	assert(axis == 0 or axis == 1)
+
+	if axis == 0 then
+		table.remove(self.values, index + 1)
+		table.remove(self.isSet_, index + 1)
+	elseif axis == 1 then
+		for _, i in ipairs(self.values) do
+			table.remove(i, index + 1)
+		end
+
+		for _, i in ipairs(self.isSet_) do
+			table.remove(i, index + 1)
+		end
+	end
+
+	self:reInterpolate()
+end
+
+---@param index Inochi2D.vec2
+---@param axis integer
+---@param scale number
+function ParameterBindingImpl:scaleValueAt(index, axis, scale)
+	-- Default to just scalar scale
+	self:setValue(index, self:getValue(index) * scale)
+end
+
+---@param index Inochi2D.vec2
+---@param axis integer
+function ParameterBindingImpl:extrapolateValueAt(index, axis)
+	local offset = self.parameter:getKeypointOffset(index)
+	local ok = false
+
+	if axis <= 0 then -- axis == 0 or -1
+		offset[1] = 1 - offset[1]
+		ok = true
+	end
+
+	if math.abs(axis) == 1 then -- axis == 1 or -1
+		offset[2] = 1 - offset[2]
+		ok = true
+	end
+
+	assert(ok, "bad axis")
+
+	local srcIndex = {0, 0} ---@type Inochi2D.vec2
+	local subOffset = {0, 0} ---@type Inochi2D.vec2
+	self.parameter:findOffset(offset, srcIndex, subOffset)
+
+	local srcVal = self:interpolate(srcIndex, subOffset)
+
+	self:setValue(index, srcVal)
+	self:scaleValueAt(index, axis, -1)
+end
+
+---For derived class, please override this!
+function ParameterBindingImpl:getType()
+	error("need to override getType")
+	return ParameterBindingImpl
+end
+
+---@param src Inochi2D.vec2
+---@param other Inochi2D.ParameterBinding
+---@param dest Inochi2D.vec2
+function ParameterBindingImpl:copyKeypointToBinding(src, other, dest)
+	if not self:isSet(src) then
+		other:unset(dest)
+	elseif other:is(self:getType()) then
+		---@cast other Inochi2D.ParameterBindingImpl
+		other:setValue(dest, self:getValue(src))
+	else
+		error("ParameterBinding class mismatch")
+	end
+end
+
+---@param src Inochi2D.vec2
+---@param other Inochi2D.ParameterBinding
+---@param dest Inochi2D.vec2
+function ParameterBindingImpl:swapKeypointWithBinding(src, other, dest)
+	if other:is(self:getType()) then
+		---@cast other Inochi2D.ParameterBindingImpl
+		local tv = self.values
+		local ts = self.isSet_
+		local ov = other.values
+		local os = other.isSet_
+
+		-- Swap directly, to avoid clobbering by update
+		ov[dest[1] + 1][dest[2] + 1], tv[src[1] + 1][src[2] + 1] = tv[src[1] + 1][src[2] + 1], ov[dest[1] + 1][dest[2] + 1]
+		os[dest[1] + 1][dest[2] + 1], ts[src[1] + 1][src[2] + 1] = ts[src[1] + 1][src[2] + 1], os[dest[1] + 1][dest[2] + 1]
+
+		self:reInterpolate()
+		other:reInterpolate()
+	else
+		error("ParameterBinding class mismatch")
+	end
+end
+
+---Gets and sets the interpolation mode
+---@param mode Inochi2D.InterpolateMode
+---@return Inochi2D.InterpolateMode
+---@overload fun(self:Inochi2D.ParameterBindingImpl):Inochi2D.InterpolateMode
+---@overload fun(self:Inochi2D.ParameterBindingImpl,mode:Inochi2D.InterpolateMode)
+function ParameterBindingImpl:interpolateMode(mode)
+	if mode then
+		self.interpolateMode_ = mode
+	else
+		return self.interpolateMode_
+	end
+end
+
+---Apply parameter to target node
+function ParameterBindingImpl:applyToTarget(value)
+	error("need to override applyToTarget")
+end
+
+---@alias Inochi2D.ParameterBindingImpl_Class Inochi2D.ParameterBindingImpl
+---| fun(parameter:Inochi2D.Parameter):Inochi2D.ParameterBindingImpl
+---| fun(parameter:Inochi2D.Parameter,node:Inochi2D.Node,paramName:string):Inochi2D.ParameterBindingImpl
+---@cast ParameterBindingImpl +Inochi2D.ParameterBindingImpl_Class
 return ParameterBindingImpl
