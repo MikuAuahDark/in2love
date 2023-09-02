@@ -156,4 +156,10 @@ function Util.isVec2(value)
 	return type(value[1]) == "number" and type(value[2]) == "number"
 end
 
+---@param a Inochi2D.vec2
+---@param b Inochi2D.vec2
+function Util.vec2Distance(a, b)
+	return math.sqrt((a[1] - b[1]) ^ 2 + (a[2] - b[2]) ^ 2)
+end
+
 return Util
