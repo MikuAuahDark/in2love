@@ -2,6 +2,8 @@ local path = (...):sub(1, -string.len(".core.nodes.node") - 1)
 
 ---@type Inochi2D.NodesFactory
 local NodesFactory = require(path..".core.nodes.factory")
+---@type Inochi2D.NodesPackage
+local NodesPackage = require(path..".core.nodes.package")
 ---@type Inochi2D.Puppet_Class
 local Puppet = require(path..".core.puppet")
 ---@type Inochi2D.TransformModule
@@ -24,11 +26,30 @@ local Transform = require(path..".math.transform")
 ---@field public recalculateTransform boolean
 local Node = require(path..".core.nodes.node_class")
 
----@param data Inochi2D.Node|Inochi2D.Puppet|nil
+---@param data1 Inochi2D.Node|Inochi2D.Puppet|integer|nil
+---@param data2 Inochi2D.Node|nil
 ---@private
-function Node:new(data)
-	-- Use Lua table pointer as UUID
-	self.uuid_ = assert(tonumber(string.format("%p", self)))
+function Node:new(data1, data2)
+	if type(data1) == "number" then
+		-- (uuid, parent?) overload
+		self.parent_ = data2
+		self.uuid_ = data1
+	else
+		if data1 then
+			if data1:is(Puppet) then
+				---@cast data1 Inochi2D.Puppet
+				-- (puppet) overload
+				self.puppet_ = data1
+			elseif data1:is(Node) then
+				---@cast data1 Inochi2D.Node
+				-- (parent) overload
+				self.parent_ = data1
+			end
+		end
+
+		self.uuid_ = NodesPackage.inCreateUUID()
+	end
+	-- () overload, parent_ is nil by default.
 
 	if data then
 		if data:is(Puppet) then
@@ -559,15 +580,21 @@ end
 ---@class Inochi2D.NodeTmp: Inochi2D.Node
 local Tmp = Node:extend()
 
-NodesFactory.inRegisterNodeType("Node", Node)
-NodesFactory.inRegisterNodeType("Tmp", Tmp)
+function Tmp.typeId()
+	return "Tmp"
+end
 
----@cast Tmp +fun(data:Inochi2D.Node|nil):Inochi2D.NodeTmp
----@cast Tmp +fun(data:Inochi2D.Puppet):Inochi2D.NodeTmp
+NodesFactory.inRegisterNodeType(Node)
+NodesFactory.inRegisterNodeType(Tmp)
+
+---@cast Tmp +fun(parent?:Inochi2D.Node):Inochi2D.NodeTmp
+---@cast Tmp +fun(puppet:Inochi2D.Puppet):Inochi2D.NodeTmp
+---@cast Tmp +fun(uuid:integer,parent?:Inochi2D.Node):Inochi2D.NodeTmp
 Node.Tmp = Tmp
 
 ---@alias Inochi2D.Node_Class Inochi2D.Node
----| fun(data:Inochi2D.Node|nil):Inochi2D.Node
----| fun(data:Inochi2D.Puppet):Inochi2D.Node
+---| fun(parent?:Inochi2D.Node):Inochi2D.Node
+---| fun(puppet:Inochi2D.Puppet):Inochi2D.Node
+---| fun(uuid:integer,parent?:Inochi2D.Node):Inochi2D.Node
 ---@cast Node +Inochi2D.Node_Class
 return Node

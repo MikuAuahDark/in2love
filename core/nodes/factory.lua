@@ -4,10 +4,9 @@ local NodesFactory = {}
 ---@type table<string, Inochi2D.Node>
 local registered = {}
 
----@param name string
 ---@param type Inochi2D.Node
-function NodesFactory.inRegisterNodeType(name, type)
-	registered[name] = type
+function NodesFactory.inRegisterNodeType(type)
+	registered[type.typeId()] = type
 end
 
 ---@param name string
