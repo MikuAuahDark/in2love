@@ -221,9 +221,4 @@ function Drawable:reset()
 end
 
 NodesFactory.inRegisterNodeType(Drawable)
----@alias Inochi2D.Drawable_Class Inochi2D.Drawable
----| fun(parent?:Inochi2D.Node):Inochi2D.Drawable
----| fun(data:Inochi2D.MeshData,parent?:Inochi2D.Node):Inochi2D.Drawable
----| fun(data:Inochi2D.MeshData,uuid:integer,parent?:Inochi2D.Node):Inochi2D.Drawable
----@cast Drawable +Inochi2D.Node_Class
 return Drawable

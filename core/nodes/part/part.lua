@@ -8,7 +8,7 @@ local NodesCommon = require(path..".core.nodes.common")
 local NodesFactory = require(path..".core.nodes.factory")
 ---@type Inochi2D.NodesPackage
 local NodesPackage = require(path..".core.nodes.package")
----@type Inochi2D.Drawable_Class
+---@type Inochi2D.Drawable
 local Drawable = require(path..".core.nodes.drawable")
 ---@type Inochi2D.MeshData_Class
 local MeshData = require(path..".core.meshdata")

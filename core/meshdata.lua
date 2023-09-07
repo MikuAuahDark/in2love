@@ -213,6 +213,7 @@ end
 ---@param uvBounds In2LOVE.vec4 x, y UV coordinates + width/height in UV coordinate space
 ---@param cuts In2LOVE.vec2 how many time to cut the mesh on the X and Y axis
 ---@param origin In2LOVE.vec2
+---@diagnostic disable-next-line: inject-field
 function MeshData.createQuadMesh(size, uvBounds, cuts, origin)
 	cuts = cuts or {6, 6}
 	origin = origin or {0, 0}

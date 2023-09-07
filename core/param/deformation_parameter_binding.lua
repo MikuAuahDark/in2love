@@ -1,6 +1,6 @@
 local path = (...):sub(1, -string.len(".core.param.deformation_parameter_binding") - 1)
 
----@type Inochi2D.Drawable_Class
+---@type Inochi2D.Drawable
 local Drawable = require(path..".core.nodes.drawable")
 ---@type Inochi2D.ParameterBindingImpl_Class
 local ParameterBindingImpl = require(path..".core.param.parameter_binding_impl")
