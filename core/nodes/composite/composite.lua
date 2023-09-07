@@ -1,7 +1,5 @@
 local path = (...):sub(1, -string.len(".core.nodes.composite.composite") - 1)
 
-local love = require("love")
-
 ---@type Inochi2D.CorePackage
 local CorePackage = require(path..".core.package")
 ---@type Inochi2D.Node_Class
@@ -14,13 +12,6 @@ local NodesPackage = require(path..".core.nodes.package")
 local Part = require(path..".core.nodes.part.part")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
-
--- TODO: Write compatibility codepath for single render target only.
-assert(love.graphics.getSystemLimits().multicanvas >= 3, "currently composite requires at least 3 render targets")
-
-local relpath = path:gsub("%.", "/")
-local cShader = love.graphics.newShader(relpath.."/shaders/composite.glsl")
-local cShaderMask = love.graphics.newShader(relpath.."/shaders/composite_mask.glsl")
 
 ---@class (exact) Inochi2D.Composite: Inochi2D.Node
 ---@field protected subParts Inochi2D.Part[]
