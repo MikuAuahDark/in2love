@@ -4,8 +4,12 @@ local path = (...):sub(1, -string.len(".core.puppet") - 1)
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.AnimationPlayer_Class
 local AnimationPlayer = require(path..".core.animation")
+---@type Inochi2D.Composite_Class
+local Composite = require(path..".core.nodes.composite.composite")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node_class")
+---@type Inochi2D.Part_Class
+local Part = require(path..".core.nodes.composite.composite")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -507,21 +511,28 @@ end
 ---Finds Node by its name or unique id
 ---@generic T: Inochi2D.Node
 ---@param name_or_uuid string|integer
----@param type T
+---@param type T|fun(...:any):T
 ---@return T|nil
 ---@overload fun(self:Inochi2D.Puppet,name_or_uuid:string|integer):(Inochi2D.Node|nil)
 function Puppet:find(name_or_uuid, type)
-	return self:findNode(self.root, name_or_uuid)
+	local result = self:findNode(self.root, name_or_uuid)
+
+	if result and Object.is(result, type or Node) then
+		return result
+	end
+
+	return nil
 end
 
 ---Returns all the parts in the puppet
+---@return Inochi2D.Part[]
 function Puppet:getAllParts()
 	return self:findNodesType(self.root, Part)
 end
 
 ---@generic T: Inochi2D.Node
 ---@param n Inochi2D.Node
----@param type T
+---@param type T|fun(...:any):T
 ---@return T[]
 function Puppet:findNodesType(n, type)
 	local nodes = {}
