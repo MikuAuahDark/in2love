@@ -295,6 +295,7 @@ function Node:parent(node)
 end
 
 ---The puppet this node is attached to
+---@return Inochi2D.Puppet
 function Node:puppet()
 	if self.parent_ then
 		return self.parent_:puppet()
