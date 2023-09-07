@@ -6,6 +6,8 @@ local Object = require(path..".lib.classic")
 local AnimationPlayer = require(path..".core.animation")
 ---@type Inochi2D.Composite_Class
 local Composite = require(path..".core.nodes.composite.composite")
+---@type Inochi2D.Driver
+local Driver = require(path..".core.nodes.driver.driver")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node_class")
 ---@type Inochi2D.Part_Class
@@ -32,6 +34,7 @@ local Util = require(path..".util")
 local Puppet = Object:extend()
 
 -- Magic value meaning that the model has no thumbnail
+---@diagnostic disable-next-line: inject-field
 Puppet.NO_THUMBNAIL = 4294967295;
 
 ---@alias Inochi2D.PuppetAllowedUsers
@@ -124,6 +127,7 @@ function UsageRights:deserialize(t)
 end
 
 ---@cast UsageRights +fun():Inochi2D.PuppetUsageRights
+---@diagnostic disable-next-line: inject-field
 Puppet.UsageRights = UsageRights
 
 ---Puppet meta information
@@ -201,6 +205,7 @@ function Meta:deserialize(t)
 end
 
 ---@cast Meta +fun():Inochi2D.PuppetMeta
+---@diagnostic disable-next-line: inject-field
 Puppet.Meta = Meta
 
 ---Puppet physics settings
@@ -235,6 +240,7 @@ function Physics:deserialize(t)
 end
 
 ---@cast Physics +fun():Inochi2D.PuppetPhysics
+---@diagnostic disable-next-line: inject-field
 Puppet.Physics = Physics
 
 ---@param root Inochi2D.Node?
@@ -412,7 +418,7 @@ function Puppet:update(delta)
 	if self.renderParameters and self.enableDrivers then
 		-- Update parameter/node driver nodes (e.g. physics)
 		for _, driver in ipairs(self.drivers) do
-			driver:updateDriver()
+			driver:updateDriver(delta)
 		end
 	end
 

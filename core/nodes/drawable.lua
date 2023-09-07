@@ -186,13 +186,13 @@ end
 
 function Drawable:drawBounds()
 	if Drawable.doGenerateBounds and #self:vertices() > 0 then
-		love.graphics.line({
+		love.graphics.line(
 			self.bounds[1], self.bounds[2],
 			self.bounds[3], self.bounds[2],
 			self.bounds[3], self.bounds[4],
 			self.bounds[1], self.bounds[4],
 			self.bounds[1], self.bounds[2]
-		})
+		)
 	end
 end
 

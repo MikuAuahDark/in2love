@@ -3,6 +3,16 @@ local path = (...):sub(1, -string.len(".core.nodes.driver.driver") - 1)
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node_class")
 
+---@alias Inochi2D.PhysicsModel
+---Rigid pendulum
+---| "pendulum"
+---Springy pendulum
+---| "spring_pendulum"
+
+---@alias Inochi2D.ParamMapMode
+---| "angle_length"
+---| "xy"
+
 ---@class (exact) Inochi2D.Driver: Inochi2D.Node
 local Driver = Node:extend()
 
@@ -29,7 +39,8 @@ function Driver:affectsParameter(param)
 	return false
 end
 
-function Driver:updateDriver()
+---@param dt number?
+function Driver:updateDriver(dt)
 	error("need to override updateDriver")
 end
 

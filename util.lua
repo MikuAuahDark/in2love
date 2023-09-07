@@ -199,4 +199,31 @@ function Util.vec3Cross(a, b)
 	}
 end
 
+---@param vec In2LOVE.vec2
+---@return In2LOVE.vec2
+---@overload fun(vec:In2LOVE.vec3):In2LOVE.vec3
+---@overload fun(vec:In2LOVE.vec4):In2LOVE.vec4
+function Util.vecNormalize(vec)
+	local length2 = vec[1] * vec[1] + vec[2] * vec[2]
+
+	if vec[3] then
+		length2 = length2 + vec[3] * vec[3]
+	end
+
+	if vec[4] then
+		length2 = length2 + vec[4] * vec[4]
+	end
+
+	local length = math.sqrt(length2)
+	if length == 0 then
+		return vec
+	elseif vec[4] then
+		return {vec[1] / length, vec[2] / length, vec[3] / length, vec[4] / length}
+	elseif vec[3] then
+		return {vec[1] / length, vec[2] / length, vec[3] / length}
+	else
+		return {vec[1] / length, vec[2] / length}
+	end
+end
+
 return Util
