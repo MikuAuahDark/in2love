@@ -5,6 +5,7 @@ local path = (...):sub(1, -string.len(".math.transform") - 1)
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
+---@alias Inochi2D.vec4 {[1]:number,[2]:number,[3]:number,[4]:number}
 ---@alias Inochi2D.vec3 {[1]:number,[2]:number,[3]:number}
 ---@alias Inochi2D.vec2 {[1]:number,[2]:number}
 

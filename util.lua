@@ -43,6 +43,10 @@ function Util.index(t, v)
 end
 
 function Util.isArray(t)
+	if type(t) ~= "table" then
+		return false
+	end
+
 	for k in pairs(t) do
 		if type(k) ~= "number" then
 			return false
@@ -160,6 +164,17 @@ end
 ---@param b Inochi2D.vec2
 function Util.vec2Distance(a, b)
 	return math.sqrt((a[1] - b[1]) ^ 2 + (a[2] - b[2]) ^ 2)
+end
+
+---https://www.tutorialspoint.com/cplusplus-program-to-compute-cross-product-of-two-vectors
+---@param a Inochi2D.vec3
+---@param b Inochi2D.vec3
+function Util.vec3Cross(a, b)
+	return {
+		a[2] * b[3] - a[3] * b[2],
+		a[3] * b[1] - a[1] * b[3],
+		a[1] * b[2] - a[2] * b[1]
+	}
 end
 
 return Util
