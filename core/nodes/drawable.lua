@@ -2,6 +2,8 @@ local path = (...):sub(1, -string.len(".core.nodes.drawable") - 1)
 
 local love = require("love")
 
+---@type Inochi2D.Object
+local Object = require(path..".lib.classic")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node")
 ---@type Inochi2D.NodesFactory
@@ -10,6 +12,8 @@ local NodesFactory = require(path..".core.nodes.factory")
 local NodesPackage = require(path..".core.nodes.package")
 ---@type Inochi2D.DeformationStack_Class
 local DeformationStack = require(path..".core.nodes.defstack")
+---@type Inochi2D.MeshData_Class
+local MeshData = require(path..".core.meshdata")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -25,19 +29,32 @@ local Drawable = Node:extend()
 Drawable.doGenerateBounds = false
 
 function Drawable:new(data1, data2, data3)
-	if type(data2) == "number" then
-		-- (data, uuid, parent) overload
-		Node.new(self, data2, data3)
-	elseif data3 == nil and Util.isArray(data1) then
-		-- (data, parent) overload
-		data3 = data2
-		data2 = NodesPackage.inCreateUUID()
-		Node.new(self, data2, data3)
+	local data, uuid, parent
+
+	if Object.is(data1, MeshData) then
+		---@cast data1 Inochi2D.MeshData
+		data = data1
+
+		if type(data2) == "number" then
+			-- (data, uuid, parent) overload
+			---@cast data2 integer
+			---@cast data3 Inochi2D.Node?
+			uuid = data2
+			parent = data3
+		else
+			---@cast data2 Inochi2D.Node?
+			uuid = NodesPackage.inCreateUUID()
+			parent = data2
+		end
+
+		Node.new(self, uuid, parent)
 	else
 		-- (parent) overload
-		Node.new(self, data1)
+		Node.new(self, parent)
+		data = MeshData()
 	end
 
+	self.data = data
 	self.deformation = {}
 	self.bounds = {0, 0, 0, 0}
 	self.deformStack = DeformationStack(self)
