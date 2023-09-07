@@ -34,6 +34,7 @@ function Node:new(data1, data2)
 		self.parent_ = data2
 		self.uuid_ = data1
 	else
+		---@cast data1 -integer
 		if data1 then
 			if data1:is(Puppet) then
 				---@cast data1 Inochi2D.Puppet
@@ -49,16 +50,6 @@ function Node:new(data1, data2)
 		self.uuid_ = NodesPackage.inCreateUUID()
 	end
 	-- () overload, parent_ is nil by default.
-
-	if data then
-		if data:is(Puppet) then
-			---@cast data Inochi2D.Puppet
-			self.puppet_ = data
-		elseif data:is(Node) then
-			---@cast data Inochi2D.Node
-			self.parent_ = data
-		end
-	end
 
 	self.name = "Unnamed Node"
 	self.enabled = true

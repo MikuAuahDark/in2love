@@ -1,4 +1,4 @@
-local path = (...):sub(1, -string.len(".core.nodes.composite") - 1)
+local path = (...):sub(1, -string.len(".core.nodes.composite.composite") - 1)
 
 local love = require("love")
 
