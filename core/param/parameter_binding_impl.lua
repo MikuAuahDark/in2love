@@ -7,7 +7,7 @@ local BindTarget = require(path..".core.param.bind_target")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@class Inochi2D.ParameterBindingImpl: Inochi2D.ParameterBinding
+---@class (exact) Inochi2D.ParameterBindingImpl: Inochi2D.ParameterBinding
 ---@field private nodeRef integer Node reference (for deserialization)
 ---@field private interpolateMode_ Inochi2D.InterpolateMode
 ---@field public parameter Inochi2D.Parameter Parent Parameter owning this binding

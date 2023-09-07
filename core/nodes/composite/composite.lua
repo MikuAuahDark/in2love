@@ -10,6 +10,8 @@ local Node = require(path..".core.nodes.node_class")
 local NodesFactory = require(path..".core.nodes.factory")
 ---@type Inochi2D.NodesPackage
 local NodesPackage = require(path..".core.nodes.package")
+---@type Inochi2D.Part_Class
+local Part = require(path..".core.nodes.part.part")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -20,7 +22,7 @@ local relpath = path:gsub("%.", "/")
 local cShader = love.graphics.newShader(relpath.."/shaders/composite.glsl")
 local cShaderMask = love.graphics.newShader(relpath.."/shaders/composite_mask.glsl")
 
----@class Inochi2D.Composite: Inochi2D.Node
+---@class (exact) Inochi2D.Composite: Inochi2D.Node
 ---@field protected subParts Inochi2D.Part[]
 ---@field protected offsetOpacity number
 ---@field protected offsetTint In2LOVE.vec3
@@ -127,7 +129,7 @@ function Composite:deserialize(data)
 	return Node.deserialize(self, data)
 end
 
-function Composite.typeId()
+function Composite:typeId()
 	return "Composite"
 end
 

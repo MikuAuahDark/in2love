@@ -3,7 +3,7 @@ local path = (...):sub(1, -string.len(".core.defstack") - 1)
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
----@class Inochi2D.DeformationStack: Inochi2D.Object
+---@class (exact) Inochi2D.DeformationStack: Inochi2D.Object
 ---@field private parent Inochi2D.Drawable
 local DeformationStack = Object:extend()
 

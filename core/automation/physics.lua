@@ -9,7 +9,7 @@ local Factory = require(path..".core.automation.factory")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@class Inochi2D.VerletNode: Inochi2D.Object, Inochi2D.ISerializable
+---@class (exact) Inochi2D.VerletNode: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public distance number
 ---@field public position In2LOVE.vec2
 ---@field public oldPosition In2LOVE.vec2
@@ -47,11 +47,12 @@ end
 
 ---@cast VerletNode +fun(pos:In2LOVE.vec2?):Inochi2D.VerletNode
 
----@class Inochi2D.PhysicsAutomation: Inochi2D.Automation
+---@class (exact) Inochi2D.PhysicsAutomation: Inochi2D.Automation
 ---@field public nodes Inochi2D.VerletNode[] A node in the internal verlet simulation
 ---@field public damping number Amount of damping to apply to movement
 ---@field public bounciness number How bouncy movement should be. 1 = default bounciness
 ---@field public gravity number Gravity to apply to each link
+---@field public typeId string Type ID of the automation
 local PhysicsAutomation = Automation:extend()
 
 function PhysicsAutomation:new(parent)

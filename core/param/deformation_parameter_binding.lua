@@ -1,5 +1,7 @@
 local path = (...):sub(1, -string.len(".core.param.deformation_parameter_binding") - 1)
 
+---@type Inochi2D.Drawable_Class
+local Drawable = require(path..".core.nodes.drawable")
 ---@type Inochi2D.ParameterBindingImpl_Class
 local ParameterBindingImpl = require(path..".core.param.parameter_binding_impl")
 ---@type Inochi2D.Deformation_Class
@@ -7,7 +9,7 @@ local Deformation = require(path..".core.deformation")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@class Inochi2D.DeformationParameterBinding: Inochi2D.ParameterBindingImpl
+---@class (exact) Inochi2D.DeformationParameterBinding: Inochi2D.ParameterBindingImpl
 ---@field public values Inochi2D.Deformation[][] The value at each 2D keypoint
 local DeformationParameterBinding = ParameterBindingImpl:extend()
 
@@ -42,8 +44,8 @@ function DeformationParameterBinding:applyToTarget(value)
 	assert(self.target.paramName == "deform")
 
 	if self.target.node:is(Drawable) then
-		---@type Inochi2D.Drawable
 		local d = self.target.node
+		---@cast d Inochi2D.Drawable
 
 		d.deformStack:push(value)
 	end
@@ -55,8 +57,8 @@ function DeformationParameterBinding:clearValue(i)
 	local result = {}
 
 	if self.target.node:is(Drawable) then
-		---@type Inochi2D.Drawable
 		local d = self.target.node
+		---@cast d Inochi2D.Drawable
 		len = #d.vertices
 	end
 
@@ -88,11 +90,11 @@ end
 ---@param other Inochi2D.Node
 function DeformationParameterBinding:isCompatibleWithNode(other)
 	if self.target.node:is(Drawable) and other:is(Drawable) then
-		---@type Inochi2D.Drawable
 		local d = self.target.node
+		---@cast d Inochi2D.Drawable
 		---@cast other Inochi2D.Drawable
 
-		return #d.vertices == #o.vertices
+		return #d.vertices == #other.vertices
 	end
 end
 

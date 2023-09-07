@@ -3,7 +3,7 @@ local path = (...):sub(1, -string.len(".core.animation.animation_parameter_ref")
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
----@class Inochi2D.AnimationParameterRef: Inochi2D.Object
+---@class (exact) Inochi2D.AnimationParameterRef: Inochi2D.Object
 ---@field public targetParam Inochi2D.Parameter? A parameter to target
 ---@field public targetAxis integer Target axis of the parameter
 local AnimationParameterRef = Object:extend()

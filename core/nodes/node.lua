@@ -9,7 +9,7 @@ local Puppet = require(path..".core.puppet")
 ---@type Inochi2D.TransformModule
 local Transform = require(path..".math.transform")
 
----@class Inochi2D.Node: Inochi2D.Object, Inochi2D.ISerializable
+---@class (exact) Inochi2D.Node: Inochi2D.Object, Inochi2D.ISerializable
 ---@field private puppet_ Inochi2D.Puppet
 ---@field private parent_ Inochi2D.Node?
 ---@field private children_ Inochi2D.Node[]
@@ -117,7 +117,8 @@ function Node:uuid()
 end
 
 ---This node's type ID
-function Node.typeId()
+---@param self any
+function Node:typeId()
 	return "Node"
 end
 
@@ -228,6 +229,7 @@ end
 ---@param m1 love.Transform
 ---@param m2 love.Transform
 ---@return {[1]:number,[2]:number,[3]:number}
+---@diagnostic disable-next-line: inject-field
 function Node.getRelativePosition(m1, m2)
 	---@type love.Transform
 	local cm = m1:inverse() * m2
@@ -240,6 +242,7 @@ end
 ---@param m1 love.Transform
 ---@param m2 love.Transform
 ---@return {[1]:number,[2]:number,[3]:number}
+---@diagnostic disable-next-line: inject-field
 function Node.getRelativePositionInv(m1, m2)
 	---@type love.Transform
 	local cm = m2 * m1:inverse()
@@ -282,13 +285,16 @@ function Node:children()
 	return self.children_
 end
 
+local OFFSET_START = -math.huge
+local OFFSET_END = math.huge
+
 ---Gets or sets the parent of this node
 ---@param node Inochi2D.Node
 ---@overload fun(self:Inochi2D.Node):Inochi2D.Node?
 ---@overload fun(self:Inochi2D.Node,node:Inochi2D.Node)
 function Node:parent(node)
 	if node then
-		self:insertInto(node, Node.OFFSET_END)
+		self:insertInto(node, OFFSET_END)
 	else
 		return self.parent_
 	end
@@ -332,9 +338,6 @@ function Node:getIndexInNode(n)
 	return 0
 end
 
-Node.OFFSET_START = -math.huge
-Node.OFFSET_END = math.huge
-
 ---@param node Inochi2D.Node?
 ---@param offset number
 function Node:insertInto(node, offset)
@@ -362,9 +365,9 @@ function Node:insertInto(node, offset)
 	self.parent_ = node
 
 	-- Update position
-	if offset == Node.OFFSET_START then
+	if offset == OFFSET_START then
 		table.insert(node.children_, 1, self)
-	elseif offset == Node.OFFSET_END then
+	elseif offset == OFFSET_END then
 		node.children_[#node.children_ + 1] = self
 	else
 		table.insert(node.children_, offset, self)
@@ -581,6 +584,7 @@ NodesFactory.inRegisterNodeType(Tmp)
 ---@cast Tmp +fun(parent?:Inochi2D.Node):Inochi2D.NodeTmp
 ---@cast Tmp +fun(puppet:Inochi2D.Puppet):Inochi2D.NodeTmp
 ---@cast Tmp +fun(uuid:integer,parent?:Inochi2D.Node):Inochi2D.NodeTmp
+---@diagnostic disable-next-line: inject-field
 Node.Tmp = Tmp
 
 ---@alias Inochi2D.Node_Class Inochi2D.Node

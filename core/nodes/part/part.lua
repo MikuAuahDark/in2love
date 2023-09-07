@@ -21,7 +21,7 @@ local Util = require(path..".util")
 ---| "Bumpmap"
 
 ---Dynamic Mesh Part
----@class Inochi2D.Part: Inochi2D.Drawable
+---@class (exact) Inochi2D.Part: Inochi2D.Drawable
 ---@field public textures (love.Texture|false)[] List of textures this part can use
 ---@field public textureIds integer[] List of texture IDs
 ---@field public masks Inochi2D.MaskBinding[] List of masks to apply
@@ -38,7 +38,7 @@ local Util = require(path..".util")
 ---@field public offsetScreenTint In2LOVE.vec3
 local Part = Drawable:extend()
 
-Part.NO_TEXTURE = 4294967295
+local NO_TEXTURE = 4294967295
 
 function Part:new(data1, data2, data3, data4)
 	local data, textures, uuid, parent
@@ -111,7 +111,7 @@ function Part:renderMask(dodge)
 	-- TODO renderMask
 end
 
-function Part.typeId()
+function Part:typeId()
 	return "Part"
 end
 
@@ -128,7 +128,7 @@ function Part:serialize()
 				index = self:puppet():getTextureSlotIndexFor(texture)
 			end
 
-			tex[#tex+1] = index >= 0 and index or Part.NO_TEXTURE
+			tex[#tex+1] = index >= 0 and index or NO_TEXTURE
 		end
 
 		result.texture = tex
@@ -154,7 +154,7 @@ function Part:deserialize(data)
 
 	if inIsINPMode() then
 		for _, textureId in ipairs(data.textures) do
-			if textureId ~= Part.NO_TEXTURE then
+			if textureId ~= NO_TEXTURE then
 				self.textureIds[#self.textureIds+1] = textureId
 				self.textures[#self.textures+1] = inGetTextureFromId(textureId)
 			end

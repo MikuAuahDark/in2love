@@ -10,7 +10,7 @@ local Object = require(path..".lib.classic")
 ---@alias In2LOVE.vec2 {[1]:number,[2]:number}
 
 ---A transform
----@class Inochi2D.Transform: Inochi2D.Object
+---@class (exact) Inochi2D.Transform: Inochi2D.Object
 ---@operator mul(Inochi2D.Transform):Inochi2D.Transform
 ---@field private trs love.Transform
 ---@field public translation In2LOVE.vec3 The translation of the transform
@@ -165,7 +165,7 @@ function Transform:__mul(other)
 		-- SCALE
 		{self.scale[1] * other.scale[1], self.scale[2] * other.scale[2]}
 	)
-	tnew.rts = strs
+	tnew.trs = strs
 
 	return tnew
 end
@@ -254,6 +254,7 @@ function Transform2D:update()
 end
 
 ---@cast Transform2D +fun(translate:In2LOVE.vec2?,rotation:number?,scale:In2LOVE.vec2?):Inochi2D.Transform2D
+---@diagnostic disable-next-line: inject-field
 Transform.D2 = Transform2D
 
 ---@alias Inochi2D.TransformModule

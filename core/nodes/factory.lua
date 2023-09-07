@@ -6,7 +6,7 @@ local registered = {}
 
 ---@param type Inochi2D.Node
 function NodesFactory.inRegisterNodeType(type)
-	local id = type.typeId()
+	local id = type:typeId()
 	assert(not registered[id], "Type already registered. Forgot to override typeId?")
 	registered[id] = type
 end

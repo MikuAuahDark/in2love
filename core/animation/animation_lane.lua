@@ -9,7 +9,7 @@ local Keyframe = require(path..".core.animation.keyframe")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@class Inochi2D.AnimationLane: Inochi2D.Object, Inochi2D.ISerializable
+---@class (exact) Inochi2D.AnimationLane: Inochi2D.Object, Inochi2D.ISerializable
 ---@field private refuuid integer
 ---@field public paramRef Inochi2D.AnimationParameterRef Reference to parameter if any
 ---@field public frames Inochi2D.Keyframe[] List of frames in the lane

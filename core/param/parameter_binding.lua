@@ -3,7 +3,7 @@ local path = (...):sub(1, -string.len(".core.param.parameter_binding") - 1)
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
----@class Inochi2D.ParameterBinding: Inochi2D.Object
+---@class (exact) Inochi2D.ParameterBinding: Inochi2D.Object
 local ParameterBinding = Object:extend()
 
 ---Finalize loading of parameter

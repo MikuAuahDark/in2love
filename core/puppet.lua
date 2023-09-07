@@ -13,7 +13,7 @@ local Part = require(path..".core.nodes.composite.composite")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@class Inochi2D.Puppet: Inochi2D.Object
+---@class (exact) Inochi2D.Puppet: Inochi2D.Object
 ---@field private puppetRootNode Inochi2D.Node An internal puppet root node
 ---@field private rootParts Inochi2D.Node[] A list of parts that are not masked by other parts for z sorting
 ---@field private drivers Inochi2D.Driver[] A list of drivers that need to run to update the puppet

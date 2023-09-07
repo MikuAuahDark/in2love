@@ -1,14 +1,14 @@
 local path = (...):sub(1, -string.len(".core.nodes.drawable") - 1)
 
-local love = require("love")
-
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
+---@alias In2LOVE.MeshData {[1]:number,[2]:number,[3]:number,[4]:number,[5]:number,[6]:number,[7]:number,[8]:number}
+
 ---Mesh data
----@class Inochi2D.MeshData: Inochi2D.Object
+---@class (exact) Inochi2D.MeshData: Inochi2D.Object
 ---@field public vertices In2LOVE.vec2[] Vertices in the mesh
 ---@field public uvs In2LOVE.vec2[] Base uvs
 ---@field public indices integer[] Indices in the mesh

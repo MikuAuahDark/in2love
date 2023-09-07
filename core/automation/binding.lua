@@ -5,7 +5,7 @@ local Object = require(path..".lib.classic")
 ---@type Inochi2D.Parameter_Class
 local Parameter = require(path..".core.param.parameter")
 
----@class Inochi2D.AutomationBinding: Inochi2D.Object
+---@class (exact) Inochi2D.AutomationBinding: Inochi2D.Object
 ---@field public paramId string Used for serialization. Name of parameter
 ---@field public param Inochi2D.Parameter Parameter to bind to
 ---@field public axis integer Axis to bind to (0 = X; 1 = Y)

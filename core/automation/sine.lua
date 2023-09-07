@@ -25,10 +25,12 @@ local SineType = {
 	[2] = "Tan"
 }
 
----@class Inochi2D.SineAutomation: Inochi2D.Automation
+---@class (exact) Inochi2D.SineAutomation: Inochi2D.Automation
 ---@field public speed number Speed of the wave
 ---@field public phase number The phase of the wave
 ---@field public sineType Inochi2D.SineType The type of wave
+---@field public typeId string Type ID of the automation
+---@field private theTime number
 local SineAutomation = Automation:extend()
 
 function SineAutomation:new(parent)
@@ -38,6 +40,8 @@ function SineAutomation:new(parent)
 	self.speed = 1
 	self.phase = 0
 	self.sineType = "Sin"
+
+	-- Not part of Inochi2D
 	self.theTime = love.timer.getTime()
 end
 

@@ -17,13 +17,12 @@ local MeshData = require(path..".core.meshdata")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@alias In2LOVE.MeshData {[1]:number,[2]:number,[3]:number,[4]:number,[5]:number,[6]:number,[7]:number,[8]:number}
-
----@class Inochi2D.Drawable: Inochi2D.Node
+---@class (exact) Inochi2D.Drawable: Inochi2D.Node
 ---@field protected data Inochi2D.MeshData The mesh data of this part (DO NOT MODIFY!)
 ---@field public deformation In2LOVE.vec2[] Deformation offset to apply
 ---@field public bounds In2LOVE.vec4 The bounds of this drawable
 ---@field public deformStack Inochi2D.DeformationStack Deformation stack
+---@field public doGenerateBounds boolean
 local Drawable = Node:extend()
 
 Drawable.doGenerateBounds = false
@@ -156,7 +155,7 @@ end
 function Drawable:drawOneDirect(forMasking)
 end
 
-function Drawable.typeId()
+function Drawable:typeId()
 	return "Drawable"
 end
 

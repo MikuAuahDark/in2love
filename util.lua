@@ -113,7 +113,7 @@ end
 
 ---@generic T
 ---@param tab T[]
----@param duplicator function
+---@param duplicator function?
 ---@return T[]
 function Util.copyArray(tab, duplicator)
 	local result = {}

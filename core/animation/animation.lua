@@ -3,7 +3,7 @@ local path = (...):sub(1, -string.len(".core.animation.animation") - 1)
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
----@class Inochi2D.Animation: Inochi2D.Object
+---@class (exact) Inochi2D.Animation: Inochi2D.Object
 ---@field public timestep number The timestep of each frame
 ---@field public additive boolean Whether the animation is additive. Additive animations will not replace main animations, but add their data on top of the running main animation.
 ---@field public animationWeight number The weight of the animation. This is only relevant for additive animations

@@ -3,7 +3,7 @@ local path = (...):sub(1, -string.len(".core.animation.keyframe") - 1)
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
----@class Inochi2D.Keyframe: Inochi2D.Object, Inochi2D.ISerializable
+---@class (exact) Inochi2D.Keyframe: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public frame integer The frame at which this frame occurs
 ---@field public value number The value of the parameter at the given frame
 ---@field public tension number Interpolation tension for cubic/inout

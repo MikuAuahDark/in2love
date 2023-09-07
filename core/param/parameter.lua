@@ -12,7 +12,7 @@ local NodesPackage = require(path..".core.nodes.package")
 local Util = require(path..".util")
 
 ---A parameter
----@class Inochi2D.Parameter: Inochi2D.Object, Inochi2D.ISerializable
+---@class (exact) Inochi2D.Parameter: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public uuid integer Unique ID of parameter
 ---@field public name string Name of the parameter
 ---@field public indexableName string Optimized indexable name generated at runtime. DO NOT SERIALIZE THIS.
@@ -25,6 +25,7 @@ local Util = require(path..".util")
 ---@field public max In2LOVE.vec2 The parameter's maximum bounds
 ---@field public axisPoints number[][] Position of the keypoints along each axis
 ---@field public bindings Inochi2D.ParameterBinding[] Binding to targets
+---@field private uuidCleaner userdata
 local Parameter = Object:extend()
 
 ---Create new parameter

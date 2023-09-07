@@ -9,7 +9,7 @@ local AutomationBinding = require(path..".core.automation.binding")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
----@class Inochi2D.Automation: Inochi2D.Object, Inochi2D.ISerializable
+---@class (exact) Inochi2D.Automation: Inochi2D.Object, Inochi2D.ISerializable
 ---@field private parent Inochi2D.Puppet
 ---@field protected bindings Inochi2D.AutomationBinding[]
 ---@field public name string Human readable name of automation
