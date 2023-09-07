@@ -182,15 +182,15 @@ function Util.isVec2(value)
 	return type(value[1]) == "number" and type(value[2]) == "number"
 end
 
----@param a Inochi2D.vec2
----@param b Inochi2D.vec2
+---@param a In2LOVE.vec2
+---@param b In2LOVE.vec2
 function Util.vec2Distance(a, b)
 	return math.sqrt((a[1] - b[1]) ^ 2 + (a[2] - b[2]) ^ 2)
 end
 
 ---https://www.tutorialspoint.com/cplusplus-program-to-compute-cross-product-of-two-vectors
----@param a Inochi2D.vec3
----@param b Inochi2D.vec3
+---@param a In2LOVE.vec3
+---@param b In2LOVE.vec3
 function Util.vec3Cross(a, b)
 	return {
 		a[2] * b[3] - a[3] * b[2],

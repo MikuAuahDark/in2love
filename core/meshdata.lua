@@ -9,10 +9,10 @@ local Util = require(path..".util")
 
 ---Mesh data
 ---@class Inochi2D.MeshData: Inochi2D.Object
----@field public vertices Inochi2D.vec2[] Vertices in the mesh
----@field public uvs Inochi2D.vec2[] Base uvs
+---@field public vertices In2LOVE.vec2[] Vertices in the mesh
+---@field public uvs In2LOVE.vec2[] Base uvs
 ---@field public indices integer[] Indices in the mesh
----@field public origin Inochi2D.vec2 Origin of the mesh
+---@field public origin In2LOVE.vec2 Origin of the mesh
 ---@field public loveMesh In2LOVE.MeshData
 ---@field public loveMeshDirty boolean
 local MeshData = Object:extend()
@@ -29,8 +29,8 @@ function MeshData:new()
 end
 
 ---Adds a new vertex
----@param xy Inochi2D.vec2
----@param uv Inochi2D.vec2
+---@param xy In2LOVE.vec2
+---@param uv In2LOVE.vec2
 function MeshData:add(xy, uv)
 	self.vertices[#self.vertices+1] = {xy[1], xy[2]}
 	self.uvs[#self.uvs+1] = {uv[1], uv[2]}
@@ -53,7 +53,7 @@ end
 ---Find the index of a vertex
 ---
 ---Note: 1-based index!
----@param vert Inochi2D.vec2
+---@param vert In2LOVE.vec2
 function MeshData:find(vert)
 	for i, v in ipairs(self.vertices) do
 		if v[1] == vert[1] and v[2] == vert[2] then
@@ -97,7 +97,7 @@ function MeshData:fixWinding()
 end
 
 ---Gets connections at a certain point
----@param point integer|Inochi2D.vec2
+---@param point integer|In2LOVE.vec2
 function MeshData:connectionsAtPoint(point)
 	if type(point) == "number" then
 		local found = 0
@@ -110,7 +110,7 @@ function MeshData:connectionsAtPoint(point)
 
 		return found
 	else
-		---@cast point Inochi2D.vec2
+		---@cast point In2LOVE.vec2
 		local p = self:find(point)
 		return p and self:connectionsAtPoint(p) or 0
 	end
@@ -209,10 +209,10 @@ end
 ---```lua
 ---MeshData.createQuadMesh(vec2i(texture.width, texture.height), vec4(0, 0, 1, 1), vec2i(32, 16))
 ---```
----@param size Inochi2D.vec2 size of the mesh
----@param uvBounds Inochi2D.vec4 x, y UV coordinates + width/height in UV coordinate space
----@param cuts Inochi2D.vec2 how many time to cut the mesh on the X and Y axis
----@param origin Inochi2D.vec2
+---@param size In2LOVE.vec2 size of the mesh
+---@param uvBounds In2LOVE.vec4 x, y UV coordinates + width/height in UV coordinate space
+---@param cuts In2LOVE.vec2 how many time to cut the mesh on the X and Y axis
+---@param origin In2LOVE.vec2
 function MeshData.createQuadMesh(size, uvBounds, cuts, origin)
 	cuts = cuts or {6, 6}
 	origin = origin or {0, 0}

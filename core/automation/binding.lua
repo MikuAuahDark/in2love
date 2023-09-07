@@ -9,7 +9,7 @@ local Parameter = require(path..".core.param.parameter")
 ---@field public paramId string Used for serialization. Name of parameter
 ---@field public param Inochi2D.Parameter Parameter to bind to
 ---@field public axis integer Axis to bind to (0 = X; 1 = Y)
----@field public range Inochi2D.vec2 Min/max range of binding
+---@field public range In2LOVE.vec2 Min/max range of binding
 local AutomationBinding = Object:extend()
 local NAN = 0/0
 

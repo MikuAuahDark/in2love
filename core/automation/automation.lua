@@ -29,7 +29,7 @@ end
 
 ---Helper function to remap range from 0.0-1.0 to min-max
 ---@param value number
----@param range Inochi2D.vec2
+---@param range In2LOVE.vec2
 function Automation:remapRange(value, range)
 	return range[1] + value * (range[2] - range[1])
 end

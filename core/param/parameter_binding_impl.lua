@@ -122,14 +122,14 @@ function ParameterBindingImpl:clearValue(i)
 end
 
 ---Gets the value at the specified point
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 ---@return any
 function ParameterBindingImpl:getValue(point)
 	return self.values[point[1] + 1][point[2] + 1]
 end
 
 ---Sets value at specified keypoint
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 ---@param value any
 function ParameterBindingImpl:setValue(point, value)
 	self.values[point[1] + 1][point[2] + 1] = value;
@@ -139,14 +139,14 @@ function ParameterBindingImpl:setValue(point, value)
 end
 
 ---Sets value at specified keypoint to the current value
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 function ParameterBindingImpl:setCurrent(point)
 	self.isSet_[point[1] + 1][point[2] + 1] = true;
 	self:reInterpolate();
 end
 
 ---Unsets value at specified keypoint
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 function ParameterBindingImpl:unset(point)
 	self.values[point[1] + 1][point[2] + 1] = self:clearValue(self.values[point[1] + 1][point[2] + 1])
 	self.isSet_[point[1] + 1][point[2] + 1] = false
@@ -155,7 +155,7 @@ function ParameterBindingImpl:unset(point)
 end
 
 ---Resets value at specified keypoint to default
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 function ParameterBindingImpl:reset(point)
 	self.values[point[1] + 1][point[2] + 1] = self:clearValue(self.values[point[1] + 1][point[2] + 1])
 	self.isSet_[point[1] + 1][point[2] + 1] = true
@@ -164,7 +164,7 @@ function ParameterBindingImpl:reset(point)
 end
 
 ---Returns whether the specified keypoint is set
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 function ParameterBindingImpl:isSet(index)
 	return self.isSet_[index[1] + 1][index[2] + 1]
 end
@@ -222,7 +222,7 @@ function ParameterBindingImpl:reInterpolate()
 	end
 
 	-- List of indices to commit
-	---@type Inochi2D.vec2[]
+	---@type In2LOVE.vec2[]
 	local commitPoints = {}
 
 	-- Used by extendAndIntersect for x/y factor
@@ -577,8 +577,8 @@ function ParameterBindingImpl:reInterpolate()
 	assert(validCount == totalCount, "Interpolation failed to complete")
 end
 
----@param leftKeypoint Inochi2D.vec2
----@param offset Inochi2D.vec2
+---@param leftKeypoint In2LOVE.vec2
+---@param offset In2LOVE.vec2
 function ParameterBindingImpl:interpolate(leftKeypoint, offset)
 	if self.interpolateMode_ == "Nearest" then
 		return self:interpolateNearest(leftKeypoint, offset)
@@ -591,16 +591,16 @@ function ParameterBindingImpl:interpolate(leftKeypoint, offset)
 	end
 end
 
----@param leftKeypoint Inochi2D.vec2
----@param offset Inochi2D.vec2
+---@param leftKeypoint In2LOVE.vec2
+---@param offset In2LOVE.vec2
 function ParameterBindingImpl:interpolateNearest(leftKeypoint, offset)
 	local px = leftKeypoint[1] + math.floor(offset[1] + 0.5)
 	local py = self.parameter.isVec2 and (leftKeypoint[2] + math.floor(offset[2] + 0.5)) or 0
 	return self.values[px + 1][py + 1]
 end
 
----@param leftKeypoint Inochi2D.vec2
----@param offset Inochi2D.vec2
+---@param leftKeypoint In2LOVE.vec2
+---@param offset In2LOVE.vec2
 function ParameterBindingImpl:interpolateLinear(leftKeypoint, offset)
 	local p0, p1
 
@@ -619,8 +619,8 @@ function ParameterBindingImpl:interpolateLinear(leftKeypoint, offset)
 	return Util.lerp(p0, p1, offset[1])
 end
 
----@param leftKeypoint Inochi2D.vec2
----@param offset Inochi2D.vec2
+---@param leftKeypoint In2LOVE.vec2
+---@param offset In2LOVE.vec2
 function ParameterBindingImpl:interpolateCubic(leftKeypoint, offset)
 	local xkp = leftKeypoint[1]
 	local xlen = #self.values - 1
@@ -650,8 +650,8 @@ function ParameterBindingImpl:interpolateCubic(leftKeypoint, offset)
 	end
 end
 
----@param leftKeypoint Inochi2D.vec2
----@param offset Inochi2D.vec2
+---@param leftKeypoint In2LOVE.vec2
+---@param offset In2LOVE.vec2
 function ParameterBindingImpl:apply(leftKeypoint, offset)
 	self:applyToTarget(self:interpolate(leftKeypoint, offset))
 end
@@ -732,7 +732,7 @@ function ParameterBindingImpl:deleteKeypoints(axis, index)
 	self:reInterpolate()
 end
 
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@param axis integer
 ---@param scale number
 function ParameterBindingImpl:scaleValueAt(index, axis, scale)
@@ -740,7 +740,7 @@ function ParameterBindingImpl:scaleValueAt(index, axis, scale)
 	self:setValue(index, self:getValue(index) * scale)
 end
 
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@param axis integer
 function ParameterBindingImpl:extrapolateValueAt(index, axis)
 	local offset = self.parameter:getKeypointOffset(index)
@@ -758,8 +758,8 @@ function ParameterBindingImpl:extrapolateValueAt(index, axis)
 
 	assert(ok, "bad axis")
 
-	local srcIndex = {0, 0} ---@type Inochi2D.vec2
-	local subOffset = {0, 0} ---@type Inochi2D.vec2
+	local srcIndex = {0, 0} ---@type In2LOVE.vec2
+	local subOffset = {0, 0} ---@type In2LOVE.vec2
 	self.parameter:findOffset(offset, srcIndex, subOffset)
 
 	local srcVal = self:interpolate(srcIndex, subOffset)
@@ -774,9 +774,9 @@ function ParameterBindingImpl:getType()
 	return ParameterBindingImpl
 end
 
----@param src Inochi2D.vec2
+---@param src In2LOVE.vec2
 ---@param other Inochi2D.ParameterBinding
----@param dest Inochi2D.vec2
+---@param dest In2LOVE.vec2
 function ParameterBindingImpl:copyKeypointToBinding(src, other, dest)
 	if not self:isSet(src) then
 		other:unset(dest)
@@ -788,9 +788,9 @@ function ParameterBindingImpl:copyKeypointToBinding(src, other, dest)
 	end
 end
 
----@param src Inochi2D.vec2
+---@param src In2LOVE.vec2
 ---@param other Inochi2D.ParameterBinding
----@param dest Inochi2D.vec2
+---@param dest In2LOVE.vec2
 function ParameterBindingImpl:swapKeypointWithBinding(src, other, dest)
 	if other:is(self:getType()) then
 		---@cast other Inochi2D.ParameterBindingImpl

@@ -7,7 +7,7 @@ local NodesFactory = require(path..".core.nodes.factory")
 
 ---Parts which contain spritesheet animation
 ---@class Inochi2D.AnimatedPart: Inochi2D.Part
----@field public splits Inochi2D.vec2 The amount of splits in the texture
+---@field public splits In2LOVE.vec2 The amount of splits in the texture
 local AnimatedPart = Part:extend()
 
 function AnimatedPart:new(...)

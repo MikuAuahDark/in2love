@@ -5,23 +5,23 @@ local path = (...):sub(1, -string.len(".math.transform") - 1)
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 
----@alias Inochi2D.vec4 {[1]:number,[2]:number,[3]:number,[4]:number}
----@alias Inochi2D.vec3 {[1]:number,[2]:number,[3]:number}
----@alias Inochi2D.vec2 {[1]:number,[2]:number}
+---@alias In2LOVE.vec4 {[1]:number,[2]:number,[3]:number,[4]:number}
+---@alias In2LOVE.vec3 {[1]:number,[2]:number,[3]:number}
+---@alias In2LOVE.vec2 {[1]:number,[2]:number}
 
 ---A transform
 ---@class Inochi2D.Transform: Inochi2D.Object
 ---@operator mul(Inochi2D.Transform):Inochi2D.Transform
 ---@field private trs love.Transform
----@field public translation Inochi2D.vec3 The translation of the transform
----@field public rotation Inochi2D.vec3 The rotation of the transform
----@field public scale Inochi2D.vec2 The scale of the transform
+---@field public translation In2LOVE.vec3 The translation of the transform
+---@field public rotation In2LOVE.vec3 The rotation of the transform
+---@field public scale In2LOVE.vec2 The scale of the transform
 ---@field public pixelSnap boolean Whether the transform should snap to pixels
 local Transform = Object:extend()
 
----@param a Inochi2D.vec3
----@param b Inochi2D.vec3
----@return Inochi2D.vec3
+---@param a In2LOVE.vec3
+---@param b In2LOVE.vec3
+---@return In2LOVE.vec3
 local function t3add(a, b)
 	return {
 		a[1] + b[1],
@@ -111,9 +111,9 @@ local function mat4scale(x, y, z)
 	)
 end
 
----@param translation Inochi2D.vec3?
----@param rotation Inochi2D.vec3?
----@param scale Inochi2D.vec2?
+---@param translation In2LOVE.vec3?
+---@param rotation In2LOVE.vec3?
+---@param scale In2LOVE.vec2?
 ---@private
 function Transform:new(translation, rotation, scale)
 	self.translation = {0, 0, 0}
@@ -140,7 +140,7 @@ function Transform:new(translation, rotation, scale)
 	end
 end
 
----@cast Transform +fun(translation:Inochi2D.vec3?,rotation:Inochi2D.vec3?,scale:Inochi2D.vec2?):Inochi2D.Transform
+---@cast Transform +fun(translation:In2LOVE.vec3?,rotation:In2LOVE.vec3?,scale:In2LOVE.vec2?):Inochi2D.Transform
 
 ---@param other Inochi2D.Transform
 function Transform:calcOffset(other)
@@ -215,14 +215,14 @@ end
 
 ---@class Inochi2D.Transform2D: Inochi2D.Object
 ---@field private trs love.Transform
----@field public translation Inochi2D.vec2
+---@field public translation In2LOVE.vec2
 ---@field public rotation number
----@field public scale Inochi2D.vec2
+---@field public scale In2LOVE.vec2
 local Transform2D = Object:extend()
 
----@param translate Inochi2D.vec2?
+---@param translate In2LOVE.vec2?
 ---@param rotation number?
----@param scale Inochi2D.vec2?
+---@param scale In2LOVE.vec2?
 ---@private
 function Transform2D:new(translate, rotation, scale)
 	self.translation = {0, 0}
@@ -253,10 +253,10 @@ function Transform2D:update()
 		:scale(self.scale[1], self.scale[2])
 end
 
----@cast Transform2D +fun(translate:Inochi2D.vec2?,rotation:number?,scale:Inochi2D.vec2?):Inochi2D.Transform2D
+---@cast Transform2D +fun(translate:In2LOVE.vec2?,rotation:number?,scale:In2LOVE.vec2?):Inochi2D.Transform2D
 Transform.D2 = Transform2D
 
 ---@alias Inochi2D.TransformModule
 ---| Inochi2D.Transform
----| +fun(translation:Inochi2D.vec3?,rotation:Inochi2D.vec3?,scale:Inochi2D.vec2?):Inochi2D.Transform
+---| +fun(translation:In2LOVE.vec3?,rotation:In2LOVE.vec3?,scale:In2LOVE.vec2?):Inochi2D.Transform
 return Transform

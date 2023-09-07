@@ -62,10 +62,10 @@ end
 
 ---Draws a texture at the transform of the specified part
 ---@param texture love.Texture
----@param position Inochi2D.vec2
+---@param position In2LOVE.vec2
 ---@param opacity number?
----@param color Inochi2D.vec3?
----@param screenColor Inochi2D.vec3?
+---@param color In2LOVE.vec3?
+---@param screenColor In2LOVE.vec3?
 function PartPackage.inDrawTextureAtPosition(texture, position, opacity, color, screenColor)
 	opacity = opacity or 1
 	color = color or {1, 1, 1}

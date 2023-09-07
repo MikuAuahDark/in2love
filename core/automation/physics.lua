@@ -11,11 +11,11 @@ local Util = require(path..".util")
 
 ---@class Inochi2D.VerletNode: Inochi2D.Object, Inochi2D.ISerializable
 ---@field public distance number
----@field public position Inochi2D.vec2
----@field public oldPosition Inochi2D.vec2
+---@field public position In2LOVE.vec2
+---@field public oldPosition In2LOVE.vec2
 local VerletNode = Object:extend()
 
----@param pos Inochi2D.vec2?
+---@param pos In2LOVE.vec2?
 function VerletNode:new(pos)
 	local x, y = 0, 0
 	if pos then
@@ -45,7 +45,7 @@ function VerletNode:deserialize(t)
 	self.oldPosition[1], self.oldPosition[2] = p[1], p[2]
 end
 
----@cast VerletNode +fun(pos:Inochi2D.vec2?):Inochi2D.VerletNode
+---@cast VerletNode +fun(pos:In2LOVE.vec2?):Inochi2D.VerletNode
 
 ---@class Inochi2D.PhysicsAutomation: Inochi2D.Automation
 ---@field public nodes Inochi2D.VerletNode[] A node in the internal verlet simulation

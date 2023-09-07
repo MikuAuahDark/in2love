@@ -18,8 +18,8 @@ function DeformationParameterBinding:new(parameter, targetNode, paramName)
 	ParameterBindingImpl.new(self, parameter, targetNode, paramName)
 end
 
----@param point Inochi2D.vec2
----@param offsets Inochi2D.vec2[]
+---@param point In2LOVE.vec2
+---@param offsets In2LOVE.vec2[]
 function DeformationParameterBinding:update(point, offsets)
 	self.isSet_[point[1] + 1][point[2] + 1] = true
 	self.values[point[1] + 1][point[2] + 1].vertexOffsets = Util.copyArray(offsets)
@@ -67,7 +67,7 @@ function DeformationParameterBinding:clearValue(i)
 	return result
 end
 
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@param axis integer
 ---@param scale number
 function DeformationParameterBinding:scaleValueAt(index, axis, scale)

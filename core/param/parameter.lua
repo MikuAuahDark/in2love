@@ -17,12 +17,12 @@ local Util = require(path..".util")
 ---@field public name string Name of the parameter
 ---@field public indexableName string Optimized indexable name generated at runtime. DO NOT SERIALIZE THIS.
 ---@field public active boolean Whether this parameter updates the model
----@field public offset Inochi2D.vec2 Automator calculated offset to apply
----@field public value Inochi2D.vec2 The current parameter value
----@field public defaults Inochi2D.vec2 The default value
+---@field public offset In2LOVE.vec2 Automator calculated offset to apply
+---@field public value In2LOVE.vec2 The current parameter value
+---@field public defaults In2LOVE.vec2 The default value
 ---@field public isVec2 boolean Whether the parameter is 2D
----@field public min Inochi2D.vec2 The parameter's minimum bounds
----@field public max Inochi2D.vec2 The parameter's maximum bounds
+---@field public min In2LOVE.vec2 The parameter's minimum bounds
+---@field public max In2LOVE.vec2 The parameter's maximum bounds
 ---@field public axisPoints number[][] Position of the keypoints along each axis
 ---@field public bindings Inochi2D.ParameterBinding[] Binding to targets
 local Parameter = Object:extend()
@@ -63,9 +63,9 @@ end
 ---
 ---Sets the value normalized up from the internal range (0.0->1.0)
 ---to the user defined range.
----@param value Inochi2D.vec2
----@overload fun(self:Inochi2D.Parameter):Inochi2D.vec2
----@overload fun(self:Inochi2D.Parameter,value:Inochi2D.vec2)
+---@param value In2LOVE.vec2
+---@overload fun(self:Inochi2D.Parameter):In2LOVE.vec2
+---@overload fun(self:Inochi2D.Parameter,value:In2LOVE.vec2)
 function Parameter:normalizedValue(value)
 	if value then
 		self.value[1] = value[1] * (self.max[1] - self.min[1]) + self.min[1]
@@ -209,9 +209,9 @@ function Parameter:finalize(puppet)
 	self.bindings = validBindingList
 end
 
----@param offset Inochi2D.vec2
----@param outIndex Inochi2D.vec2
----@param outOffset Inochi2D.vec2
+---@param offset In2LOVE.vec2
+---@param outIndex In2LOVE.vec2
+---@param outOffset In2LOVE.vec2
 function Parameter:findOffset(offset, outIndex, outOffset)
 	-- TODO: optimize routine
 	---@param axis integer
@@ -280,19 +280,19 @@ end
 ]]
 
 ---Get the offset (0..1) of a specified keypoint index
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 function Parameter:getKeypointOffset(index)
 	return {self.axisPoints[1][index[1] + 1], self.axisPoints[2][index[2] + 1]}
 end
 
 ---Get the value at a specified keypoint index
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 function Parameter:getKeypointValue(index)
 	return self:unmapValue(self:getKeypointOffset(index))
 end
 
 ---Maps an input value to an offset (0.0->1.0)
----@param value Inochi2D.vec2
+---@param value In2LOVE.vec2
 function Parameter:mapValue(value)
 	local rangeX = self.max[1] - self.min[1]
 	local rangeY = self.max[2] - self.min[2]
@@ -356,7 +356,7 @@ function Parameter:getClosestAxisPointIndex(axis, offset)
 end
 
 ---Find the keypoint closest to the (current) value
----@param value Inochi2D.vec2?
+---@param value In2LOVE.vec2?
 function Parameter:findClosestKeypoint(value)
 	value = value or self.value
 
@@ -367,7 +367,7 @@ function Parameter:findClosestKeypoint(value)
 end
 
 ---Find the keypoint closest to the (current) value
----@param value Inochi2D.vec2
+---@param value In2LOVE.vec2
 function Parameter:getClosestKeypointValue(value)
 	return self:getKeypointValue(self:findClosestKeypoint(value))
 end

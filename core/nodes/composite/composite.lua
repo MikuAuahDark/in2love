@@ -23,13 +23,13 @@ local cShaderMask = love.graphics.newShader(relpath.."/shaders/composite_mask.gl
 ---@class Inochi2D.Composite: Inochi2D.Node
 ---@field protected subParts Inochi2D.Part[]
 ---@field protected offsetOpacity number
----@field protected offsetTint Inochi2D.vec3
----@field protected offsetScreenTint Inochi2D.vec3
+---@field protected offsetTint In2LOVE.vec3
+---@field protected offsetScreenTint In2LOVE.vec3
 ---@field public blendingMode Inochi2D.BlendingMode The blending mode
 ---@field public opacity number The opacity of the composite
 ---@field public threshold number The threshold for rendering masks
----@field public tint Inochi2D.vec3 Multiplicative tint color
----@field public screenTint Inochi2D.vec3 Screen tint color
+---@field public tint In2LOVE.vec3 Multiplicative tint color
+---@field public screenTint In2LOVE.vec3 Screen tint color
 local Composite = Node:extend()
 
 function Composite:new(data1, data2)

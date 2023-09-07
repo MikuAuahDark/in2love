@@ -21,8 +21,8 @@ local Util = require(path..".util")
 
 ---@class Inochi2D.Drawable: Inochi2D.Node
 ---@field protected data Inochi2D.MeshData The mesh data of this part (DO NOT MODIFY!)
----@field public deformation Inochi2D.vec2[] Deformation offset to apply
----@field public bounds Inochi2D.vec4 The bounds of this drawable
+---@field public deformation In2LOVE.vec2[] Deformation offset to apply
+---@field public bounds In2LOVE.vec4 The bounds of this drawable
 ---@field public deformStack Inochi2D.DeformationStack Deformation stack
 local Drawable = Node:extend()
 

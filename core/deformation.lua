@@ -6,7 +6,7 @@ local Object = require(path..".lib.classic")
 local Util = require(path..".util")
 
 ---@class Inochi2D.Deformation: Inochi2D.Object, Inochi2D.ISerializable
----@field public vertexOffsets Inochi2D.vec2[]
+---@field public vertexOffsets In2LOVE.vec2[]
 local Deformation = Object:extend()
 
 ---@param value Inochi2D.Deformation?
@@ -14,7 +14,7 @@ function Deformation:new(value)
 	self.vertexOffsets = value and Util.copyArray(value.vertexOffsets) or {}
 end
 
----@param points Inochi2D.vec2[]
+---@param points In2LOVE.vec2[]
 function Deformation:update(points)
 	self.vertexOffsets = Util.copyArray(points)
 end
@@ -34,9 +34,9 @@ function Deformation:__unm()
 	return result
 end
 
----@param lhs Inochi2D.Deformation|Inochi2D.vec2|number
----@param rhs Inochi2D.Deformation|Inochi2D.vec2|number
----@return Inochi2D.Deformation, Inochi2D.Deformation|Inochi2D.vec2|number, boolean
+---@param lhs Inochi2D.Deformation|In2LOVE.vec2|number
+---@param rhs Inochi2D.Deformation|In2LOVE.vec2|number
+---@return Inochi2D.Deformation, Inochi2D.Deformation|In2LOVE.vec2|number, boolean
 local function resolveOrderOfOperation(lhs, rhs)
 	---@diagnostic disable-next-line: param-type-mismatch
 	if Object.is(lhs, Deformation) then
@@ -53,8 +53,8 @@ local function resolveOrderOfOperation(lhs, rhs)
 	end
 end
 
----@param lhs Inochi2D.Deformation|Inochi2D.vec2|number
----@param rhs Inochi2D.Deformation|Inochi2D.vec2|number
+---@param lhs Inochi2D.Deformation|In2LOVE.vec2|number
+---@param rhs Inochi2D.Deformation|In2LOVE.vec2|number
 function Deformation.__mul(lhs, rhs)
 	lhs, rhs = resolveOrderOfOperation(lhs, rhs)
 	local result = Deformation()
@@ -70,7 +70,7 @@ function Deformation.__mul(lhs, rhs)
 			result.vertexOffsets[i] = {l[1] * r[1], l[2] * r[2]}
 		end
 	elseif Util.isVec2(rhs) then
-		---@cast rhs Inochi2D.vec2
+		---@cast rhs In2LOVE.vec2
 		for i, l in ipairs(lhs.vertexOffsets) do
 			result.vertexOffsets[i] = {l[1] * rhs[1], l[2] * rhs[2]}
 		end
@@ -85,8 +85,8 @@ function Deformation.__mul(lhs, rhs)
 	return result
 end
 
----@param lhs Inochi2D.Deformation|Inochi2D.vec2|number
----@param rhs Inochi2D.Deformation|Inochi2D.vec2|number
+---@param lhs Inochi2D.Deformation|In2LOVE.vec2|number
+---@param rhs Inochi2D.Deformation|In2LOVE.vec2|number
 function Deformation.__add(lhs, rhs)
 	lhs, rhs = resolveOrderOfOperation(lhs, rhs)
 	local result = Deformation()
@@ -102,7 +102,7 @@ function Deformation.__add(lhs, rhs)
 			result.vertexOffsets[i] = {l[1] + r[1], l[2] + r[2]}
 		end
 	elseif Util.isVec2(rhs) then
-		---@cast rhs Inochi2D.vec2
+		---@cast rhs In2LOVE.vec2
 		for i, l in ipairs(lhs.vertexOffsets) do
 			result.vertexOffsets[i] = {l[1] + rhs[1], l[2] + rhs[2]}
 		end
@@ -117,8 +117,8 @@ function Deformation.__add(lhs, rhs)
 	return result
 end
 
----@param lhs Inochi2D.Deformation|Inochi2D.vec2|number
----@param rhs Inochi2D.Deformation|Inochi2D.vec2|number
+---@param lhs Inochi2D.Deformation|In2LOVE.vec2|number
+---@param rhs Inochi2D.Deformation|In2LOVE.vec2|number
 function Deformation.__sub(lhs, rhs)
 	local isFlip
 	lhs, rhs, isFlip = resolveOrderOfOperation(lhs, rhs)
@@ -144,7 +144,7 @@ function Deformation.__sub(lhs, rhs)
 			end
 		end
 	elseif Util.isVec2(rhs) then
-		---@cast rhs Inochi2D.vec2
+		---@cast rhs In2LOVE.vec2
 		if isFlip then
 			for i, l in ipairs(lhs.vertexOffsets) do
 				result.vertexOffsets[i] = {rhs[1] - l[1], rhs[2] - l[2]}

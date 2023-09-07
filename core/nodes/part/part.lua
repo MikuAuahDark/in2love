@@ -29,13 +29,13 @@ local Util = require(path..".util")
 ---@field public maskAlphaThreshold number Alpha Threshold for the masking system, the higher the more opaque pixels will be discarded in the masking process
 ---@field public opacity number Opacity of the mesh
 ---@field public emissionStrength number Strength of emission
----@field public tint Inochi2D.vec3 Multiplicative tint color
----@field public screenTint Inochi2D.vec3 Screen tint color
+---@field public tint In2LOVE.vec3 Multiplicative tint color
+---@field public screenTint In2LOVE.vec3 Screen tint color
 ---@field public offsetMaskThreshold number
 ---@field public offsetOpacity number
 ---@field public offsetEmissionStrength number
----@field public offsetTint Inochi2D.vec3
----@field public offsetScreenTint Inochi2D.vec3
+---@field public offsetTint In2LOVE.vec3
+---@field public offsetScreenTint In2LOVE.vec3
 local Part = Drawable:extend()
 
 Part.NO_TEXTURE = 4294967295

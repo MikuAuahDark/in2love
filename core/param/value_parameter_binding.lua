@@ -24,7 +24,7 @@ function ValueParameterBinding:clearValue(i)
 	return self.target.node:getDefaultValue(self.target.paramName)
 end
 
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@param axis integer
 ---@param scale number
 function ValueParameterBinding:scaleValueAt(index, axis, scale)

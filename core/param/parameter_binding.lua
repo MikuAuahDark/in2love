@@ -13,8 +13,8 @@ function ParameterBinding:finalize(puppet)
 end
 
 ---Apply a binding to the model at the given parameter value
----@param leftKeypoint Inochi2D.vec2
----@param offset Inochi2D.vec2
+---@param leftKeypoint In2LOVE.vec2
+---@param offset In2LOVE.vec2
 function ParameterBinding:apply(leftKeypoint, offset)
 	error("need to override apply")
 end
@@ -25,25 +25,25 @@ function ParameterBinding:clear()
 end
 
 ---Sets value at specified keypoint to the current value
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 function ParameterBinding:setCurrent(point)
 	error("need to override setCurrent")
 end
 
 ---Unsets value at specified keypoint
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 function ParameterBinding:unset(point)
 	error("need to override unset")
 end
 
 ---Resets value at specified keypoint to default
----@param point Inochi2D.vec2
+---@param point In2LOVE.vec2
 function ParameterBinding:reset(point)
 	error("need to override reset")
 end
 
 ---Returns whether the specified keypoint is set
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@return boolean
 function ParameterBinding:isSet(index)
 	error("need to override isSet")
@@ -51,7 +51,7 @@ end
 
 
 ---Scales the value, optionally with axis awareness
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@param axis integer
 ---@param scale number
 function ParameterBinding:scaleValueAt(index, axis, scale)
@@ -59,24 +59,24 @@ function ParameterBinding:scaleValueAt(index, axis, scale)
 end
 
 ---Extrapolates the value across an axis
----@param index Inochi2D.vec2
+---@param index In2LOVE.vec2
 ---@param axis integer
 function ParameterBinding:extrapolateValueAt(index, axis)
 	error("need to override extrapolateValueAt")
 end
 
 ---Copies the value to a point on another compatible binding
----@param src Inochi2D.vec2
+---@param src In2LOVE.vec2
 ---@param other Inochi2D.ParameterBinding
----@param dest Inochi2D.vec2
+---@param dest In2LOVE.vec2
 function ParameterBinding:copyKeypointToBinding(src, other, dest)
 	error("need to override copyKeypointToBinding")
 end
 
 ---Swaps the value to a point on another compatible binding
----@param src Inochi2D.vec2
+---@param src In2LOVE.vec2
 ---@param other Inochi2D.ParameterBinding
----@param dest Inochi2D.vec2
+---@param dest In2LOVE.vec2
 function ParameterBinding:swapKeypointWithBinding(src, other, dest)
 	error("need to override swapKeypointWithBinding")
 end
