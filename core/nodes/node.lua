@@ -28,7 +28,6 @@ local Node = require(path..".core.nodes.node_class")
 
 ---@param data1 Inochi2D.Node|Inochi2D.Puppet|integer|nil
 ---@param data2 Inochi2D.Node|nil
----@private
 function Node:new(data1, data2)
 	if type(data1) == "number" then
 		-- (uuid, parent?) overload

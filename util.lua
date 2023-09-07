@@ -64,6 +64,7 @@ function Util.serializeArray(tab)
 	for _, v in ipairs(tab) do
 		if type(v) == "table" then
 			if type(v.serialize) == "function" then
+				---@cast v Inochi2D.ISerializable
 				result[#result + 1] = v:serialize()
 			elseif Util.isArray(v) then
 				result[#result+1] = Util.serializeArray(v)
@@ -82,8 +83,20 @@ end
 ---@param tab table<string,T>
 function Util.serializeDictionary(tab)
 	local result = {}
-	for k, v in ipairs(tab) do
-		result[k] = v:serialize()
+
+	for k, v in pairs(tab) do
+		if type(v) == "table" then
+			if type(v.serialize) == "function" then
+				---@cast v Inochi2D.ISerializable
+				result[k] = v:serialize()
+			elseif Util.isArray(v) then
+				result[k] = Util.serializeArray(v)
+			else
+				result[k] = v
+			end
+		else
+			result[k] = v
+		end
 	end
 
 	return result
@@ -100,12 +113,21 @@ end
 
 ---@generic T
 ---@param tab T[]
+---@param duplicator function
 ---@return T[]
-function Util.copyArray(tab)
+function Util.copyArray(tab, duplicator)
 	local result = {}
 
-	for k, v in ipairs(tab) do
-		result[k] = v
+	if duplicator then
+		for k, v in ipairs(tab) do
+			if type(v) == "table" then
+				result[k] = duplicator(v, duplicator)
+			end
+		end
+	else
+		for k, v in ipairs(tab) do
+			result[k] = v
+		end
 	end
 
 	return result
