@@ -9,3 +9,8 @@
 ---| "Cubic"
 ---Interpolation using beziér splines
 ---| "Bezier"
+
+---@class Inochi2D.CorePackage
+local CorePackage = {}
+
+return CorePackage

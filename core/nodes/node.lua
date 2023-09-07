@@ -384,7 +384,7 @@ function Node:insertInto(node, offset)
 	end
 end
 
-Node.DEFAULT_PARAM_VALUE = {
+local DEFAULT_PARAM_VALUE = {
 	["zSort"] = 0,
 	["transform.t.x"] = 0,
 	["transform.t.y"] = 0,
@@ -399,14 +399,14 @@ Node.DEFAULT_PARAM_VALUE = {
 ---Return whether this node supports a parameter
 ---@param key string
 function Node:hasParam(key)
-	return not not Node.DEFAULT_PARAM_VALUE[key]
+	return not not DEFAULT_PARAM_VALUE[key]
 end
 
 ---Gets the default offset value
 ---@param key string
 ---@return number
 function Node:getDefaultValue(key)
-	return Node.DEFAULT_PARAM_VALUE[key] or 0
+	return DEFAULT_PARAM_VALUE[key] or (0/0)
 end
 
 ---Sets offset value
