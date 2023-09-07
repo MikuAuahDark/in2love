@@ -5,7 +5,7 @@ local love = require("love")
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.Node_Class
-local Node = require(path..".core.nodes.node")
+local Node = require(path..".core.nodes.node_class")
 ---@type Inochi2D.NodesFactory
 local NodesFactory = require(path..".core.nodes.factory")
 ---@type Inochi2D.NodesPackage
