@@ -582,7 +582,7 @@ end
 ---returns -1 if none was found
 ---@param texture love.Texture
 function Puppet:getTextureSlotIndexFor(texture)
-	return Util.index(self.textureSlots, texture) or -1
+	return (Util.index(self.textureSlots, texture) or 0) - 1
 end
 
 
