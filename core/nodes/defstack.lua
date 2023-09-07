@@ -1,4 +1,4 @@
-local path = (...):sub(1, -string.len(".core.deformation_stack") - 1)
+local path = (...):sub(1, -string.len(".core.defstack") - 1)
 
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
