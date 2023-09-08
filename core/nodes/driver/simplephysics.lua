@@ -88,12 +88,12 @@ function SimplePhysics:deserialize(data)
 	end
 
 	if data.model_type then
-		assert(data.model_type == "pendulum" or data.model_type == "spring_pendulum")
+		assert(data.model_type == "Pendulum" or data.model_type == "SpringPendulum")
 		self.modelType_ = data.model_type
 	end
 
 	if data.map_mode then
-		assert(data.map_mode == "angle_length" or data.map_mode == "xy")
+		assert(data.map_mode == "AngleLength" or data.map_mode == "XY")
 		self.mapMode = data.map_mode
 	end
 

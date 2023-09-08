@@ -8,6 +8,8 @@ local NodesPackage = require(path..".core.nodes.package")
 local Puppet = require(path..".core.puppet")
 ---@type Inochi2D.TransformModule
 local Transform = require(path..".math.transform")
+---@type Inochi2D.UtilModule
+local Util = require(path..".util")
 
 ---@class (exact) Inochi2D.Node: Inochi2D.Object, Inochi2D.ISerializable
 ---@field private puppet_ Inochi2D.Puppet
@@ -31,7 +33,10 @@ local Node = require(path..".core.nodes.node_class")
 function Node:new(data1, data2)
 	if type(data1) == "number" then
 		-- (uuid, parent?) overload
-		self.parent_ = data2
+		if data2 then
+			self:parent(data2)
+		end
+
 		self.uuid_ = data1
 	else
 		---@cast data1 -integer
@@ -43,7 +48,7 @@ function Node:new(data1, data2)
 			elseif data1:is(Node) then
 				---@cast data1 Inochi2D.Node
 				-- (parent) overload
-				self.parent_ = data1
+				self:parent(data1)
 			end
 		end
 
@@ -51,10 +56,14 @@ function Node:new(data1, data2)
 	end
 	-- () overload, parent_ is nil by default.
 
-	self.name = "Unnamed Node"
-	self.enabled = true
-	self.zsort_ = 0
 	self.children_ = {}
+	self.zsort_ = 0
+	self.lockToRoot_ = false
+	self.nodePath_ = ""
+	self.offsetTransform = Transform()
+	self.offsetSort = 0
+	self.enabled = true
+	self.name = "Unnamed Node"
 	self.localTransform = Transform()
 	self.globalTransform = Transform()
 	self.recalculateTransform = true
@@ -329,13 +338,7 @@ end
 
 ---@param n Inochi2D.Node
 function Node:getIndexInNode(n)
-	for i, v in ipairs(n.children_) do
-		if v == self then
-			return i
-		end
-	end
-
-	return 0
+	return (Util.index(n.children_, self) or 0) - 1
 end
 
 ---@param node Inochi2D.Node?
@@ -349,10 +352,11 @@ function Node:insertInto(node, offset)
 		-- Try to find ourselves in our parent
 		-- note idx will be -1 if we can't be found
 		local idx = self:getIndexInParent()
-		assert(idx > 0, "Invalid parent-child relationship!")
+		print(self.name, self.parent_.name)
+		assert(idx >= 0, "Invalid parent-child relationship!")
 
 		-- Remove ourselves
-		table.remove(self.parent_.children_, idx)
+		table.remove(self.parent_.children_, idx + 1)
 	end
 
 	-- If we want to become parentless we need to handle that
@@ -555,14 +559,16 @@ function Node:deserialize(data)
 	end
 
 	-- Pre-populate our children with the correct types
-	for _, child in ipairs(data.children) do
-		-- Fetch type from json
-		---@type string
-		local nodeType = assert(child.type)
+	if data.children then
+		for _, child in ipairs(data.children) do
+			-- Fetch type from json
+			---@type string
+			local nodeType = assert(child.type)
 
-		if NodesFactory.inHasNodeType(nodeType) then
-			local n = NodesFactory.inInstantiateNode(nodeType, self)
-			n:deserialize(child)
+			if NodesFactory.inHasNodeType(nodeType) then
+				local n = NodesFactory.inInstantiateNode(nodeType, self)
+				n:deserialize(child)
+			end
 		end
 	end
 end

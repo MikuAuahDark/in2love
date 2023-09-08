@@ -5,6 +5,7 @@ assert(love.graphics, "love.graphics is required")
 
 ---@type Inochi2D.FmtModule
 local FmtModule = require(path..".fmt")
+require(path..".core.nodes")
 
 ---@class Inochi2D
 local Inochi2D = {

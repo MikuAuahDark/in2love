@@ -4,6 +4,9 @@ local path = (...):sub(1, -string.len(".core.nodes") - 1)
 local NodesPackage = require(path..".core.nodes.package")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node")
+require(path..".core.nodes.composite")
+require(path..".core.nodes.driver")
+require(path..".core.nodes.part")
 
 ---@class Inochi2D.NodesModule
 local NodesModule = {}

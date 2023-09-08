@@ -1,4 +1,4 @@
-local path = (...):sub(1, -string.len(".core.nodes.drawable") - 1)
+local path = (...):sub(1, -string.len(".core.meshdata") - 1)
 
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")

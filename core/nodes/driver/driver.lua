@@ -5,13 +5,13 @@ local Node = require(path..".core.nodes.node_class")
 
 ---@alias Inochi2D.PhysicsModel
 ---Rigid pendulum
----| "pendulum"
+---| "Pendulum"
 ---Springy pendulum
----| "spring_pendulum"
+---| "SpringPendulum"
 
 ---@alias Inochi2D.ParamMapMode
----| "angle_length"
----| "xy"
+---| "AngleLength"
+---| "XY"
 
 ---@class (exact) Inochi2D.Driver: Inochi2D.Node
 local Driver = Node:extend()

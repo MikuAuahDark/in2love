@@ -103,11 +103,13 @@ function Drawable:deserialize(data)
 	Node.deserialize(self, data)
 	self.data:deserialize(data.mesh)
 
+	--[[
 	local vertices = self:vertices()
 
 	for _, v in ipairs(self.data.vertices) do
 		vertices[#vertices+1] = {v[1], v[2]}
 	end
+	]]
 
 	-- Update indices and vertices
 	self:updateIndices()

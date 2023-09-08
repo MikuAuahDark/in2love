@@ -146,7 +146,7 @@ end
 function Transform:calcOffset(other)
 	local tnew = Transform(
 		t3add(self.translation, other.translation),
-		t3add(self.rotation, other.rotation)
+		t3add(self.rotation, other.rotation),
 		{self.scale[1] * other.scale[1], self.scale[2] * other.scale[2]}
 	)
 	tnew:update()

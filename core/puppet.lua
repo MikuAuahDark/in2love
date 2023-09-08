@@ -182,8 +182,8 @@ function Meta:serialize()
 end
 
 function Meta:deserialize(t)
-	self.name = assert(t.name)
-	self.version_ = assert(t.version)
+	self.name = t.name or self.name
+	self.version_ = t.version or self.version_
 	self.rigger = t.rigger
 	self.artist = t.artist
 
@@ -257,12 +257,18 @@ function Puppet:new(root)
 	self.animations = {}
 	self.meta = Meta()
 	self.physics = Physics()
-	self.player = AnimationPlayer(self)
 	self.root = root or Node(self.puppetRootNode)
 	self.root.name = "Root"
+	self.parameters = {}
+	self.automation = {}
+	self.textureSlots = {}
+	self.extData = {}
+	self.renderParameters = true
+	self.enableDrivers = true
+	self.player = AnimationPlayer(self)
 
 	if root then
-		self:scanParts(self.root)
+		self:scanParts(self.root, true)
 		self:selfSort()
 	end
 end
@@ -309,8 +315,10 @@ end
 ---@param reparent boolean?
 ---@private
 function Puppet:scanParts(node, reparent)
-	-- We want rootParts to be cleared so that we don't draw the same part multiple times and if the node tree changed
-	-- we want to reflect those changes not the old node tree.
+	-- We want rootParts to be cleared so that we
+	-- don't draw the same part multiple times
+	-- and if the node tree changed we want to reflect those changes
+	-- not the old node tree.
 	Util.clearTable(self.rootParts)
 
 	-- Same for drivers
