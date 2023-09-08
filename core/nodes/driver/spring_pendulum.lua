@@ -46,7 +46,7 @@ function SpringPendulum:eval(t)
 	local critDampAngle = 2 * math.sqrt(lengthRatio)
 	local critDampLength = 2 * springKsqrt
 
-	local dist = Util.vec2Distance(driver.anchor, self.bob)
+	local dist = Util.vec2Distance(self.driver.anchor, self.bob)
 	local ddBob = {
 		0 - offPosNorm[1] * (dist - restLength) * springK,
 		g - offPosNorm[2] * (dist - restLength) * springK,

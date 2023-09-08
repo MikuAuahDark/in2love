@@ -1,38 +1,20 @@
----@class Inochi2D.fmt
-local fmt = {}
+local path = (...):sub(1, -string.len(".fmt") - 1)
 
----Loads a puppet from a file
----@param path string
-function fmt.inLoadPuppet(path)
+---@param dest table
+---@param modname string
+local function merge(dest, modname)
+	for k, v in pairs(require(modname)) do
+		dest[k] = v
+	end
 end
 
----Loads a puppet from memory
----@param data string
-function fmt.inLoadPuppetFromMemory(data)
-end
+---@alias Inochi2D.FmtModule Inochi2D.Binfmt|Inochi2D.FmtPackage1|Inochi2D.FmtPackage2
 
----Loads a JSON based puppet
----@param data string
-function fmt.inLoadJSONPuppet(data)
-end
+local FmtModule = {}
 
----Loads a INP based puppet
----@param buffer string
-function fmt.inLoadINPPuppet(buffer)
-end
+merge(FmtModule, path..".fmt.binfmt")
+merge(FmtModule, path..".fmt.package1")
+merge(FmtModule, path..".fmt.package2")
 
----Writes Inochi2D puppet to file
----@param p Inochi2D.Puppet
-function fmt.inWriteINPPuppet(p)
-end
-
----Writes a puppet to file
----@param p Inochi2D.Puppet
-function fmt.inWriteJSONPuppet(p)
-end
-
-fmt.IN_TEX_PNG = 0 -- PNG encoded Inochi2D texture
-fmt.IN_TEX_TGA = 1 -- TGA encoded Inochi2D texture
-fmt.IN_TEX_BC7 = 2 -- BC7 encoded Inochi2D texture
-
-return fmt
+---@cast FmtModule Inochi2D.FmtModule
+return FmtModule
