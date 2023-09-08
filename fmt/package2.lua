@@ -44,6 +44,7 @@ function FmtPackage2.inLoadPuppet(file)
 		if getmetatable(file) == luafile then
 			---@cast file file*
 			f = file
+		---@diagnostic disable-next-line: undefined-field
 		elseif file.typeOf then
 			---@cast file love.Object
 			if file:typeOf("Data") then
@@ -72,6 +73,8 @@ end
 function FmtPackage2.inLoadINPPuppet(file)
 	assert(Binfmt.inVerifyMagicBytes(file), "Invalid data format for INP puppet/Inochi Creator INX")
 
+	FmtPackage1.inSetINPMode(true)
+
 	-- Find the puppet data
 	local puppetDataLength = Binfmt.readUint32(file)
 	local puppetData = file:read(puppetDataLength) or ""
@@ -81,6 +84,7 @@ function FmtPackage2.inLoadINPPuppet(file)
 	assert(Binfmt.inVerifySection(file, Binfmt.TEX_SECTION), "Expected Texture Blob section, got nothing!")
 	local slots = {} ---@type (love.Texture|false)[]
 	local slotCount = Binfmt.readUint32(file)
+	FmtPackage1.inSetTextureSlots(slots)
 
 	for _ = 1, slotCount do
 		local textureLength = Binfmt.readUint32(file)
@@ -111,6 +115,8 @@ function FmtPackage2.inLoadINPPuppet(file)
 	if Binfmt.inVerifySection(file, Binfmt.EXT_SECTION) then
 		-- TODO extData
 	end
+
+	FmtPackage1.inSetTextureSlots({})
 
 	-- We're done!
 	return puppet

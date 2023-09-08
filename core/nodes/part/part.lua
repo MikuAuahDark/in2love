@@ -12,6 +12,8 @@ local NodesPackage = require(path..".core.nodes.package")
 local Drawable = require(path..".core.nodes.drawable")
 ---@type Inochi2D.MeshData_Class
 local MeshData = require(path..".core.meshdata")
+---@type Inochi2D.FmtPackage1
+local FmtPackage1 = require(path..".fmt.package1")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -118,7 +120,7 @@ end
 function Part:serialize()
 	local result = Drawable.serialize(self)
 
-	if inIsINPMode() then
+	if FmtPackage1.inIsINPMode() then
 		local tex = {}
 
 		for _, texture in ipairs(self.textures) do
@@ -152,11 +154,11 @@ end
 function Part:deserialize(data)
 	Drawable.deserialize(self, data)
 
-	if inIsINPMode() then
+	if FmtPackage1.inIsINPMode() then
 		for _, textureId in ipairs(data.textures) do
 			if textureId ~= NO_TEXTURE then
 				self.textureIds[#self.textureIds+1] = textureId
-				self.textures[#self.textures+1] = inGetTextureFromId(textureId)
+				self.textures[#self.textures+1] = FmtPackage1.inGetTextureFromId(textureId)
 			end
 		end
 	else
