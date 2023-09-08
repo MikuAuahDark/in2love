@@ -4,6 +4,8 @@ local path = (...):sub(1, -string.len(".core.puppet") - 1)
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.AnimationPlayer_Class
 local AnimationPlayer = require(path..".core.animation")
+---@type Inochi2D.AutomationModule
+local AutomationModule = require(path..".core.automation")
 ---@type Inochi2D.Composite_Class
 local Composite = require(path..".core.nodes.composite.composite")
 ---@type Inochi2D.Driver
@@ -11,7 +13,9 @@ local Driver = require(path..".core.nodes.driver.driver")
 ---@type Inochi2D.Node_Class
 local Node = require(path..".core.nodes.node_class")
 ---@type Inochi2D.Part_Class
-local Part = require(path..".core.nodes.composite.composite")
+local Part = require(path..".core.nodes.part.part")
+---@type Inochi2D.ParamModule
+local ParamModule = require(path..".core.param")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -569,7 +573,7 @@ function Puppet:addTextureToSlot(texture)
 		i = #self.textureSlots
 	end
 
-	return i
+	return i - 1
 end
 
 ---Populate texture slots with all visible textures in the model
@@ -590,7 +594,7 @@ function Puppet:setThumbnail(texture)
 	if self.meta.thumbnailId == Puppet.NO_THUMBNAIL then
 		self.meta.thumbnailId = self:addTextureToSlot(texture)
 	else
-		self.textureSlots[self.meta.thumbnailId] = texture
+		self.textureSlots[self.meta.thumbnailId + 1] = texture
 	end
 end
 
@@ -610,7 +614,7 @@ end
 function Puppet:clearThumbnail(deleteTexture)
 	if self.meta.thumbnailId ~= Puppet.NO_THUMBNAIL then
 		if deleteTexture then
-			self.textureSlots[self.meta.thumbnailId] = false
+			self.textureSlots[self.meta.thumbnailId + 1] = false
 		end
 
 		self.meta.thumbnailId = Puppet.NO_THUMBNAIL
@@ -635,7 +639,64 @@ function Puppet:serialize()
 	}
 end
 
--- TODO: finalizeDeserialization
+function Puppet:deserialize(t)
+	self.meta:deserialize(assert(t.meta))
+
+	if t.physics then
+		self.physics:deserialize(t.physics)
+	end
+
+	self.root:deserialize(t.nodes)
+
+	-- Allow parameter loading to be overridden (for Inochi Creator)
+	if t.param then
+		for _, key in ipairs(assert(t.param)) do
+			self.parameters[#self.parameters+1] = ParamModule.inParameterCreate(key)
+		end
+	end
+
+	-- Deserialize automation
+	if t.automation then
+		for _, key in ipairs(t.automation) do
+			local type = tostring(assert(key.type))
+
+			if AutomationModule.inHasAutomationType(type) then
+				local auto = AutomationModule.inInstantiateAutomation(type, self)
+				auto:deserialize(key)
+				self.automation[#self.automation+1] = auto
+			end
+		end
+	end
+
+	if t.animation then
+		-- TODO
+	end
+
+	self:finalizeDeserialization(t)
+end
+
+---Finalizer
+function Puppet:finalizeDeserialization(t)
+	self.root:setPuppet(self)
+	self.root.name = "Root"
+	self.puppetRootNode = Node(self)
+	self.root:finalize()
+
+	for _, parameter in ipairs(self.parameters) do
+		parameter:finalize(self)
+	end
+
+	for _, automation in ipairs(self.automation) do
+		automation:finalize(self)
+	end
+
+	for _, animation in pairs(self.animations) do
+		animation:finalize(self)
+	end
+
+	self:scanParts(self.root, true)
+	self:selfSort()
+end
 
 ---Gets the internal root parts array 
 ---
