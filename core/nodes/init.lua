@@ -6,6 +6,7 @@ local NodesPackage = require(path..".core.nodes.package")
 local Node = require(path..".core.nodes.node")
 require(path..".core.nodes.composite")
 require(path..".core.nodes.driver")
+require(path..".core.nodes.mask")
 require(path..".core.nodes.part")
 
 ---@class Inochi2D.NodesModule
