@@ -11,7 +11,7 @@ local ValueParameterBinding = ParameterBindingImpl:extend()
 ---@param targetNode Inochi2D.Node?
 ---@param paramName string?
 function ValueParameterBinding:new(parameter, targetNode, paramName)
-	ParameterBindingImpl.new(self, parameter, targetNode, paramName)
+	return ParameterBindingImpl.new(self, parameter, targetNode, paramName)
 end
 
 ---@param value number

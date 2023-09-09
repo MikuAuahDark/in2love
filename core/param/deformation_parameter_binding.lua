@@ -17,7 +17,7 @@ local DeformationParameterBinding = ParameterBindingImpl:extend()
 ---@param targetNode Inochi2D.Node?
 ---@param paramName string?
 function DeformationParameterBinding:new(parameter, targetNode, paramName)
-	ParameterBindingImpl.new(self, parameter, targetNode, paramName)
+	return ParameterBindingImpl.new(self, parameter, targetNode, paramName)
 end
 
 ---@param point In2LOVE.vec2
@@ -34,7 +34,8 @@ function DeformationParameterBinding:deserialize(t)
 	for _, u in ipairs(self.values) do
 		for i, v in ipairs(u) do
 			local d = Deformation()
-			u[i] = d:deserialize(v)
+			d:deserialize(v)
+			u[i] = d
 		end
 	end
 end

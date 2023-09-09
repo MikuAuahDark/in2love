@@ -31,6 +31,18 @@ local Node = require(path..".core.nodes.node_class")
 ---@param data1 Inochi2D.Node|Inochi2D.Puppet|integer|nil
 ---@param data2 Inochi2D.Node|nil
 function Node:new(data1, data2)
+	self.children_ = {}
+	self.zsort_ = 0
+	self.lockToRoot_ = false
+	self.nodePath_ = ""
+	self.offsetTransform = Transform()
+	self.offsetSort = 0
+	self.enabled = true
+	self.name = "Unnamed Node"
+	self.localTransform = Transform()
+	self.globalTransform = Transform()
+	self.recalculateTransform = true
+
 	if type(data1) == "number" then
 		-- (uuid, parent?) overload
 		if data2 then
@@ -55,18 +67,6 @@ function Node:new(data1, data2)
 		self.uuid_ = NodesPackage.inCreateUUID()
 	end
 	-- () overload, parent_ is nil by default.
-
-	self.children_ = {}
-	self.zsort_ = 0
-	self.lockToRoot_ = false
-	self.nodePath_ = ""
-	self.offsetTransform = Transform()
-	self.offsetSort = 0
-	self.enabled = true
-	self.name = "Unnamed Node"
-	self.localTransform = Transform()
-	self.globalTransform = Transform()
-	self.recalculateTransform = true
 end
 
 ---Send mask reset request one node up
@@ -352,7 +352,6 @@ function Node:insertInto(node, offset)
 		-- Try to find ourselves in our parent
 		-- note idx will be -1 if we can't be found
 		local idx = self:getIndexInParent()
-		print(self.name, self.parent_.name)
 		assert(idx >= 0, "Invalid parent-child relationship!")
 
 		-- Remove ourselves

@@ -28,9 +28,10 @@ local Drawable = Node:extend()
 Drawable.doGenerateBounds = false
 
 function Drawable:new(data1, data2, data3)
-	local data, uuid, parent
+	local data
 
 	if Object.is(data1, MeshData) then
+		local uuid, parent
 		---@cast data1 Inochi2D.MeshData
 		data = data1
 
@@ -49,7 +50,7 @@ function Drawable:new(data1, data2, data3)
 		Node.new(self, uuid, parent)
 	else
 		-- (parent) overload
-		Node.new(self, parent)
+		Node.new(self, data1)
 		data = MeshData()
 	end
 

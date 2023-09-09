@@ -179,7 +179,11 @@ function Util.clamp(value, min, max)
 end
 
 function Util.isVec2(value)
-	return type(value[1]) == "number" and type(value[2]) == "number"
+	if type(value) == "table" then
+		return type(value[1]) == "number" and type(value[2]) == "number"
+	end
+
+	return false
 end
 
 ---@param a In2LOVE.vec2

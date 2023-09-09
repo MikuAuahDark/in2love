@@ -47,8 +47,8 @@ function SimplePhysics:new(data1, data2)
 
 	self.paramRef = 4294967295
 	self.param_ = nil
-	self.modelType_ = "pendulum"
-	self.mapMode = "angle_length"
+	self.modelType_ = "Pendulum"
+	self.mapMode = "AngleLength"
 	self.gravity = 1
 	self.length = 100
 	self.frequency = 1
@@ -168,14 +168,14 @@ function SimplePhysics:updateOutputs()
 		local relLength = Util.vec2Distance(self.output, self.anchor) / self.length
 
 		local paramVal
-		if self.mapMode == "xy" then
+		if self.mapMode == "XY" then
 			local localPostNormX = localAngle[1] * relLength
 			local localPostNormY = localAngle[2] * relLength
 			paramVal = {
 				localPostNormX,
 				1 - localPostNormY -- Y goes up for params
 			}
-		elseif self.mapMode == "angle_length" then
+		elseif self.mapMode == "AngleLength" then
 			local a = math.atan2(-localAngle[1], localAngle[2]) / math.pi
 			paramVal = {a, relLength}
 		else
@@ -191,9 +191,9 @@ end
 function SimplePhysics:reset()
 	self:updateInputs()
 
-	if self.modelType_ == "pendulum" then
+	if self.modelType_ == "Pendulum" then
 		self.system = Pendulum(self)
-	elseif self.modelType_ == "spring_pendulum" then
+	elseif self.modelType_ == "SpringPendulum" then
 		self.system = SpringPendulum(self)
 	else
 		error("invalid model type")

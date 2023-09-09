@@ -26,14 +26,6 @@ local Util = require(path..".util")
 local Composite = Node:extend()
 
 function Composite:new(data1, data2)
-	if type(data1) == "number" then
-		-- (uuid, parent) overload
-		Node.new(self, data1, data2)
-	else
-		-- (parent) overload
-		Node.new(self, NodesPackage.inCreateUUID(), data1)
-	end
-
 	self.subParts = {}
 	self.offsetOpacity = 1
 	self.offsetTint = {0, 0, 0}
@@ -43,6 +35,14 @@ function Composite:new(data1, data2)
 	self.threshold = 0.5
 	self.tint = {1, 1, 1}
 	self.screenTint = {0, 0, 0}
+
+	if type(data1) == "number" then
+		-- (uuid, parent) overload
+		Node.new(self, data1, data2)
+	else
+		-- (parent) overload
+		Node.new(self, NodesPackage.inCreateUUID(), data1)
+	end
 end
 
 ---@private
