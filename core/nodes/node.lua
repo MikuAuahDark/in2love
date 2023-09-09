@@ -4,8 +4,6 @@ local path = (...):sub(1, -string.len(".core.nodes.node") - 1)
 local NodesFactory = require(path..".core.nodes.factory")
 ---@type Inochi2D.NodesPackage
 local NodesPackage = require(path..".core.nodes.package")
----@type Inochi2D.Puppet_Class
-local Puppet = require(path..".core.puppet")
 ---@type Inochi2D.TransformModule
 local Transform = require(path..".math.transform")
 ---@type Inochi2D.UtilModule
@@ -27,6 +25,14 @@ local Util = require(path..".util")
 ---@field public globalTransform Inochi2D.Transform The cached world space transform of the node
 ---@field public recalculateTransform boolean
 local Node = require(path..".core.nodes.node_class")
+
+-- Needs to be loaded BEFORE puppet!
+function Node:__tostring()
+	return self.name
+end
+
+---@type Inochi2D.Puppet_Class
+local Puppet = require(path..".core.puppet")
 
 ---@param data1 Inochi2D.Node|Inochi2D.Puppet|integer|nil
 ---@param data2 Inochi2D.Node|nil
@@ -185,7 +191,7 @@ function Node:transform(ignoreParam)
 
 		if ignoreParam then
 			if self.lockToRoot_ then
-				self.globalTransform = self.localTransform * self.puppet_.root.localTransform
+				self.globalTransform = self.localTransform * self:puppet().root.localTransform
 			elseif self.parent_ then
 				self.globalTransform = self.localTransform * self.parent_:transform()
 			else
@@ -193,7 +199,7 @@ function Node:transform(ignoreParam)
 			end
 		else
 			if self.lockToRoot_ then
-				self.globalTransform = self.localTransform:calcOffset(self.offsetTransform) * self.puppet_.root.localTransform
+				self.globalTransform = self.localTransform:calcOffset(self.offsetTransform) * self:puppet().root.localTransform
 			elseif self.parent_ then
 				self.globalTransform = self.localTransform:calcOffset(self.offsetTransform) * self.parent_:transform()
 			else
@@ -426,13 +432,14 @@ function Node:setValue(key, value)
 	elseif key == "transform.r.z" then
 		self.offsetTransform.rotation[3] = self.offsetTransform.rotation[3] + value
 	elseif key == "transform.s.x" then
-		self.offsetTransform.scale[1] = self.offsetTransform.scale[1] + value
+		self.offsetTransform.scale[1] = self.offsetTransform.scale[1] * value
 	elseif key == "transform.s.y" then
-		self.offsetTransform.scale[2] = self.offsetTransform.scale[2] + value
+		self.offsetTransform.scale[2] = self.offsetTransform.scale[2] * value
 	else
 		return false
 	end
 
+	self:transformChanged()
 	return true
 end
 
@@ -570,10 +577,6 @@ function Node:deserialize(data)
 			end
 		end
 	end
-end
-
-function Node:__tostring()
-	return self.name
 end
 
 ---@class Inochi2D.NodeTmp: Inochi2D.Node

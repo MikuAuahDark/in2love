@@ -407,7 +407,7 @@ function Puppet:update(delta)
 
 	-- Update Automators
 	for _, auto in ipairs(self.automation) do
-		auto:update()
+		auto:update(delta)
 	end
 
 	self.root:beginUpdate()

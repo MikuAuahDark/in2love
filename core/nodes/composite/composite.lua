@@ -59,7 +59,7 @@ end
 ---@param a Inochi2D.Part
 ---@param b Inochi2D.Part
 local function sortHigh(a, b)
-	return a.zSort > b.zSort
+	return a:zSort() > b:zSort()
 end
 
 ---@private

@@ -374,9 +374,7 @@ end
 ---Paused animations will automatically be skipped to save processing resources
 ---@param delta number?
 function AnimationPlayer:step(delta)
-	if delta == nil then
-		delta = love.timer.getDelta()
-	end
+	delta = delta or love.timer.getDelta()
 
 	if self.currAnimation and self.currAnimation.paused == false then
 		self:stepMain(delta)

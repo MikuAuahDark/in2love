@@ -35,6 +35,7 @@ end
 ---@param y number
 ---@param z number
 ---@param w number
+---@return number,number,number,number
 local function mat4mulvec4(mat4, x, y, z, w)
 	-- LOVE lacking 3D transform functions makes this hilarious
 	local a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = mat4:getMatrix()
@@ -57,34 +58,46 @@ local function mat4translate(x, y, z)
 		0, 0, 0, 1
 	)
 end
+_G.mat4translate = mat4translate
 
----@param x number
----@param y number
----@param z number
-local function mat4quatrot(x, y, z)
-	local cr = math.cos(x * 0.5);
-    local sr = math.sin(x * 0.5);
-    local cp = math.cos(y * 0.5);
-    local sp = math.sin(y * 0.5);
-    local cy = math.cos(z * 0.5);
-    local sy = math.sin(z * 0.5);
-    local q3 = cr * cp * cy + sr * sp * sy;
-    local q0 = sr * cp * cy - cr * sp * sy;
-    local q1 = cr * sp * cy + sr * cp * sy;
-    local q2 = cr * cp * sy - sr * sp * cy;
+---@param roll number
+---@param pitch number
+---@param yaw number
+local function mat4quatrot(roll, pitch, yaw)
+	-- Copied from inmath.
+	local cr = math.cos(roll / 2)
+	local cp = math.cos(pitch / 2)
+	local cy = math.cos(yaw / 2)
+	local sr = math.sin(roll / 2)
+	local sp = math.sin(pitch / 2)
+	local sy = math.sin(yaw / 2)
 
-	-- First row of the rotation matrix
-	local r00 = 2 * (q0 * q0 + q1 * q1) - 1
-	local r01 = 2 * (q1 * q2 - q0 * q3)
-	local r02 = 2 * (q1 * q3 + q0 * q2)
-	-- Second row of the rotation matrix
-	local r10 = 2 * (q1 * q2 + q0 * q3)
-	local r11 = 2 * (q0 * q0 + q2 * q2) - 1
-	local r12 = 2 * (q2 * q3 - q0 * q1)
-	-- Third row of the rotation matrix
-	local r20 = 2 * (q1 * q3 - q0 * q2)
-	local r21 = 2 * (q2 * q3 + q0 * q1)
-	local r22 = 2 * (q0 * q0 + q3 * q3) - 1
+	local w = cr * cp * cy + sr * sp * sy
+	local x = sr * cp * cy - cr * sp * sy
+	local y = cr * sp * cy + sr * cp * sy
+	local z = cr * cp * sy - sr * sp * cy
+
+	local xx = x ^ 2
+	local xy = x * y
+	local xz = x * z
+	local xw = x * w
+	local yy = y ^ 2
+	local yz = y * z
+	local yw = y * w
+	local zz = z ^ 2
+	local zw = z * w
+
+	local r00 = 1 - 2 * (yy + zz);
+	local r01 = 2 * (xy - zw);
+	local r02 = 2 * (xz + yw);
+
+	local r10 = 2 * (xy + zw);
+	local r11 = 1 - 2 * (xx + zz);
+	local r12 = 2 * (yz - xw);
+
+	local r20 = 2 * (xz - yw);
+	local r21 = 2 * (yz + xw);
+	local r22 = 1 - 2 * (xx + yy);
 
 	-- LOVE lacking 3D transform functions makes this hilarious
 	return love.math.newTransform():setMatrix(
@@ -97,16 +110,14 @@ end
 
 ---@param x number
 ---@param y number
----@param z number
-local function mat4scale(x, y, z)
+local function mat4scale(x, y)
 	y = y or x
-	z = z or math.sqrt(x * y) -- ???
 
 	-- LOVE lacking 3D transform functions makes this hilarious
 	return love.math.newTransform():setMatrix(
 		x, 0, 0, 0,
 		0, y, 0, 0,
-		0, 0, z, 0,
+		0, 0, 1, 0,
 		0, 0, 0, 1
 	)
 end
@@ -138,6 +149,8 @@ function Transform:new(translation, rotation, scale)
 		self.scale[1] = scale[1]
 		self.scale[2] = scale[2]
 	end
+
+	self:update()
 end
 
 ---@cast Transform +fun(translation:In2LOVE.vec3?,rotation:In2LOVE.vec3?,scale:In2LOVE.vec2?):Inochi2D.Transform
@@ -149,14 +162,14 @@ function Transform:calcOffset(other)
 		t3add(self.rotation, other.rotation),
 		{self.scale[1] * other.scale[1], self.scale[2] * other.scale[2]}
 	)
-	tnew:update()
 	return tnew
 end
 
+---Returns the result of 2 transforms multiplied together
 ---@param other Inochi2D.Transform
 function Transform:__mul(other)
 	-- TODO: Re-evaluate multiplication order in LOVE
-	local strs = self.trs:clone():apply(other.trs)
+	local strs = other.trs * self.trs
 	local tnew = Transform(
 		-- TRANSLATION
 		{mat4mulvec4(strs, 1, 1, 1, 1)},
@@ -165,8 +178,6 @@ function Transform:__mul(other)
 		-- SCALE
 		{self.scale[1] * other.scale[1], self.scale[2] * other.scale[2]}
 	)
-	tnew.trs = strs
-
 	return tnew
 end
 
@@ -182,15 +193,16 @@ end
 
 function Transform:update()
 	self.trs:reset()
-	self.trs:apply(mat4translate(self.translation[1], self.translation[2], self.translation[3]))
-	self.trs:apply(mat4quatrot(self.rotation[1], self.rotation[2], self.rotation[3]))
-	self.trs:apply(mat4scale(self.scale[1], self.scale[2], 1))
+		:apply(mat4translate(self.translation[1], self.translation[2], self.translation[3]))
+		:apply(mat4quatrot(self.rotation[1], self.rotation[2], self.rotation[3]))
+		:apply(mat4scale(self.scale[1], self.scale[2]))
 end
 
 function Transform:clear()
 	self.translation[1], self.translation[2], self.translation[3] = 0, 0, 0
 	self.rotation[1], self.rotation[2], self.rotation[3] = 0, 0, 0
 	self.scale[1], self.scale[2] = 1, 1
+	self.trs:reset()
 end
 
 function Transform:serialize()
