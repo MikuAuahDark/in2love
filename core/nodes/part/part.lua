@@ -14,6 +14,8 @@ local Drawable = require(path..".core.nodes.drawable")
 local MeshData = require(path..".core.meshdata")
 ---@type Inochi2D.FmtPackage1
 local FmtPackage1 = require(path..".fmt.package1")
+---@type In2LOVE.Render
+local Render = require(path..".render")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -104,13 +106,21 @@ end
 ---@private
 function Part:drawSelf(isMask)
 	if #self.textures > 0 then
-		-- TODO rendering
+		Render.in2DrawVertices(self.data, self.deformation, self:transform():matrix(), self.textures[1], self.textures[2], self.textures[3])
 	end
 end
 
 ---@param dodge boolean?
 function Part:renderMask(dodge)
-	-- TODO renderMask
+	Render.in2BeginMask(dodge)
+	Render.in2DrawMask(Part.drawSelfMasked, self)
+	Render.in2EndMask()
+end
+
+---Not part of original Inochi2D
+---@private
+function Part:drawSelfMasked()
+	return self:drawSelf(true)
 end
 
 function Part:typeId()
@@ -378,10 +388,8 @@ end
 
 function Part:drawOne()
 	if self.enabled and self.data:isReady() then
-		local cMasks = self:maskCount()
-
 		if #self.masks > 0 then
-			-- TODO inBeginMask
+			Render.in2ClearMask()
 
 			for _, mask in ipairs(self.masks) do
 				if mask.maskSrc then
@@ -389,11 +397,11 @@ function Part:drawOne()
 				end
 			end
 
-			-- TODO inBeginMaskContent
-
+			Render.in2BeginMask()
 			self:drawSelf()
+			Render.in2EndMask()
 
-			-- TODO inEndMask
+			return
 		end
 
 		self:drawSelf()
