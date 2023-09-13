@@ -112,9 +112,7 @@ end
 
 ---@param dodge boolean?
 function Part:renderMask(dodge)
-	Render.in2BeginMask(dodge)
-	Render.in2DrawMask(Part.drawSelfMasked, self)
-	Render.in2EndMask()
+	Render.in2DrawMask(dodge, Part.drawSelfMasked, self)
 end
 
 ---Not part of original Inochi2D
@@ -388,8 +386,10 @@ end
 
 function Part:drawOne()
 	if self.enabled and self.data:isReady() then
+		local cMasks = self:maskCount()
+
 		if #self.masks > 0 then
-			Render.in2ClearMask()
+			Render.in2BeginMask()
 
 			for _, mask in ipairs(self.masks) do
 				if mask.maskSrc then
@@ -397,10 +397,12 @@ function Part:drawOne()
 				end
 			end
 
-			Render.in2BeginMask()
-			self:drawSelf()
-			Render.in2EndMask()
+			Render.in2BeginMaskContent()
 
+			-- We are the content
+			self:drawSelf()
+
+			Render.in2EndMask()
 			return
 		end
 

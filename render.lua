@@ -81,25 +81,27 @@ end
 
 ---TODO: Support LOVE 12 stencil API
 ---@generic T
+---@param dodge boolean|nil
 ---@param cb fun(self:T)
 ---@param thisArg T
-function Render.in2DrawMask(cb, thisArg)
+function Render.in2DrawMask(dodge, cb, thisArg)
 	-- Masks uses stencil buffer
 	tempStencilCallback = cb
 	tempThisArg = thisArg
-	love.graphics.stencil(stencil, "replace", 255, true)
+	love.graphics.stencil(stencil, "replace", dodge and 0 or 1, true)
 end
 
-function Render.in2BeginMask(dodge)
-	love.graphics.setStencilTest("equal", dodge and 0 or 255)
+function Render.in2BeginMask(hasMask)
+	love.graphics.clear(false, hasMask and 0 or 1)
+end
+
+---Starts masking content
+function Render.in2BeginMaskContent()
+	love.graphics.setStencilTest("equal", 1)
 end
 
 function Render.in2EndMask()
 	love.graphics.setStencilTest()
-end
-
-function Render.in2ClearMask()
-	love.graphics.clear(false, true)
 end
 
 Render.resizeMesh(1024)
