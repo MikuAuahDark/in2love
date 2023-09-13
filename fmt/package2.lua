@@ -101,8 +101,16 @@ function FmtPackage2.inLoadINPPuppet(file)
 				extension = ".ktx"
 			end
 
+			local settings
+			if textureType ~= FmtPackage2.IN_TEX_BC7 then
+				settings = {mipmaps = true}
+			end
+
 			local fileData = love.filesystem.newFileData(file:read(textureLength) or "", extension)
-			slots[#slots+1] = love.graphics.newImage(fileData)
+			local image = love.graphics.newImage(fileData, settings)
+			slots[#slots+1] = image
+
+			image:setWrap("clampzero", "clampzero")
 			fileData:release()
 		end
 	end
