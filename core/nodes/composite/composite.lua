@@ -10,6 +10,8 @@ local NodesFactory = require(path..".core.nodes.factory")
 local NodesPackage = require(path..".core.nodes.package")
 ---@type Inochi2D.Part_Class
 local Part = require(path..".core.nodes.part.part")
+---@type In2LOVE.Render
+local Render = require(path..".render")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -48,10 +50,13 @@ end
 ---@private
 function Composite:drawSelf()
 	if #self.subParts > 0 then
-		-- TODO composite
+		Render.in2BeginComposite()
+
 		for _, child in ipairs(self.subParts) do
 			child:drawOne()
 		end
+
+		Render.in2EndComposite()
 		-- TODO composite
 	end
 end

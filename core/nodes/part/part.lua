@@ -106,6 +106,7 @@ end
 ---@private
 function Part:drawSelf(isMask)
 	if #self.textures > 0 then
+		Render.in2SetBlendMode(self.blendingMode)
 		Render.in2DrawVertices(self.data, self.deformation, self:transform():matrix(), self.textures[1], self.textures[2], self.textures[3])
 	end
 end
@@ -194,6 +195,11 @@ function Part:deserialize(data)
 		self.tint[1] = data.emissionStrength[1]
 		self.tint[2] = data.emissionStrength[2]
 		self.tint[3] = data.emissionStrength[3]
+	end
+
+	-- Older models may not have blend mode
+	if data.blend_mode then
+		self.blendingMode = data.blend_mode
 	end
 
 	if data.masked_by then
@@ -389,7 +395,7 @@ function Part:drawOne()
 		local cMasks = self:maskCount()
 
 		if #self.masks > 0 then
-			Render.in2BeginMask()
+			Render.in2BeginMask(cMasks > 0)
 
 			for _, mask in ipairs(self.masks) do
 				if mask.maskSrc then
