@@ -15,5 +15,5 @@ vec4 effect(vec4 multColor, Image tex, vec2 texUVs, vec2 pc)
     if (color.a <= threshold)
 		discard;
 
-    outColor = vec4(1.0, 1.0, 1.0);
+    return vec4(1.0);
 }
