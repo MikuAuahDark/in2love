@@ -57,7 +57,21 @@ function Composite:drawSelf()
 		end
 
 		Render.in2EndComposite()
-		-- TODO composite
+
+		Render.in2ActivateCompositeShader(
+			{
+				self.tint[1] * self.offsetTint[1],
+				self.tint[2] * self.offsetTint[2],
+				self.tint[3] * self.offsetTint[3],
+			}, {
+				self.screenTint[1] * self.offsetScreenTint[1],
+				self.screenTint[2] * self.offsetScreenTint[2],
+				self.screenTint[3] * self.offsetScreenTint[3],
+			},
+			self.offsetOpacity * self.opacity
+		)
+		Render.in2SetBlendMode(self.blendingMode)
+		Render.in2MergeComposite()
 	end
 end
 

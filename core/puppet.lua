@@ -16,6 +16,8 @@ local Node = require(path..".core.nodes.node_class")
 local Part = require(path..".core.nodes.part.part")
 ---@type Inochi2D.ParamModule
 local ParamModule = require(path..".core.param")
+---@type In2LOVE.Render
+local Render = require(path..".render")
 ---@type Inochi2D.UtilModule
 local Util = require(path..".util")
 
@@ -489,11 +491,15 @@ end
 function Puppet:draw()
 	self:selfSort()
 
+	Render.in2BeginModelRender()
+
 	for _, rootPart in ipairs(self.rootParts) do
 		if rootPart:renderEnabled() then
 			rootPart:drawOne()
 		end
 	end
+
+	Render.in2EndModelRender()
 end
 
 ---Removes a parameter from this puppet

@@ -106,7 +106,26 @@ end
 ---@private
 function Part:drawSelf(isMask)
 	if #self.textures > 0 then
-		Render.in2SetBlendMode(self.blendingMode)
+		if isMask then
+			Render.in2ActivateMaskShader(Util.clamp(self.offsetMaskThreshold + self.maskAlphaThreshold, 0, 1))
+			Render.in2SetBlendMode(nil)
+		else
+			Render.in2ActivateBasicShader(
+				{
+					self.tint[1] * self.offsetTint[1],
+					self.tint[2] * self.offsetTint[2],
+					self.tint[3] * self.offsetTint[3],
+				}, {
+					self.screenTint[1] * self.offsetScreenTint[1],
+					self.screenTint[2] * self.offsetScreenTint[2],
+					self.screenTint[3] * self.offsetScreenTint[3],
+				},
+				self.offsetOpacity * self.opacity,
+				self.offsetEmissionStrength * self.emissionStrength
+			)
+			Render.in2SetBlendMode(self.blendingMode)
+		end
+
 		Render.in2DrawVertices(self.data, self.deformation, self:transform():matrix(), self.textures[1], self.textures[2], self.textures[3])
 	end
 end
