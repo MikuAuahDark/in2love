@@ -57,6 +57,8 @@ end
 ---@param trans love.Transform?
 function Pendulum:drawDebug(trans)
 	love.graphics.push("all")
+	love.graphics.setCanvas()
+	love.graphics.setShader()
 	if trans then
 		love.graphics.applyTransform(trans)
 	end
