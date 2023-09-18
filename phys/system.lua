@@ -84,9 +84,9 @@ function PhysicsSystem:tick(h)
 
 	self:eval(self.t)
 	local k1 = Util.copyArray(self.derivative)
-	local k2 = self:_doKStep(h, cur, k1)
-	local k3 = self:_doKStep(h, cur, k2)
-	local k4 = self:_doKStep(h, cur, k3)
+	local k2 = self:_doKStep(h, cur, k1, 2)
+	local k3 = self:_doKStep(h, cur, k2, 2)
+	local k4 = self:_doKStep(h, cur, k3, 1)
 
 	for i = 1, #cur do
 		local r = cur[i] + h * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]) / 6
@@ -111,14 +111,14 @@ end
 ---@param h number
 ---@param cur number[]
 ---@param kold number[]
----@return number[]
+---@param div number
 ---@private
-function PhysicsSystem:_doKStep(h, cur, kold)
+function PhysicsSystem:_doKStep(h, cur, kold, div)
 	for i = 1, #cur do
 		local ref = self.refs[math.floor((i - 1) / 2) + 1]
 		ref[i % 2 + 1] = cur[i] + h * kold[i] / 2
 	end
-	self:eval(self.t + h / 2)
+	self:eval(self.t + h / div)
 	return Util.copyArray(self.derivative)
 end
 

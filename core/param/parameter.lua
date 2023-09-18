@@ -167,7 +167,7 @@ function Parameter:deserialize(t)
 	end
 
 	if t.defaults then
-		self.defaults = {t.defaults[1], t.defaults[2]}
+		self.defaults[1], self.defaults[2] = t.defaults[1], t.defaults[2]
 	end
 
 	if t.bindings and #t.bindings > 0 then

@@ -123,9 +123,10 @@ function SimplePhysics:deserialize(data)
 	end
 end
 
+---@return Inochi2D.Parameter[]
 function SimplePhysics:getAffectedParameters()
-	---@type Inochi2D.Parameter[]
-	return self.param and {self.param} or {}
+	local param = self:param()
+	return param and {param} or {}
 end
 
 ---@param h number?
