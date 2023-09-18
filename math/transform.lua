@@ -168,7 +168,6 @@ end
 ---Returns the result of 2 transforms multiplied together
 ---@param other Inochi2D.Transform
 function Transform:__mul(other)
-	-- TODO: Re-evaluate multiplication order in LOVE
 	local strs = other.trs * self.trs
 	local tnew = Transform(
 		-- TRANSLATION

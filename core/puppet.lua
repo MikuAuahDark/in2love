@@ -486,8 +486,6 @@ function Puppet:getIsNodeBound(n)
 end
 
 ---Draws the puppet
----
----**TODO**: Remove or implement?
 function Puppet:draw()
 	self:selfSort()
 
@@ -635,7 +633,6 @@ function Puppet:clearThumbnail(deleteTexture)
 	end
 end
 
--- TODO: __tostring
 function Puppet:__tostring()
 	return string.format("Puppet<%p>", self)
 end

@@ -33,11 +33,6 @@ local NodesCommon = {}
 ---The path should be dodge masked by the drawables specified
 ---| "DodgeMask"
 
----@param blendingMode Inochi2D.BlendingMode
-function NodesCommon.inSetBlendMode(blendingMode)
-	-- TODO
-end
-
 ---@class Inochi2D.MaskBinding: Inochi2D.Object
 ---@field public maskSrcUUID integer
 ---@field public mode Inochi2D.MaskingMode

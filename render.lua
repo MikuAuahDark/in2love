@@ -141,7 +141,7 @@ function Render.in2SetBlendMode(blend)
 		-- Disable blending
 		love.graphics.setBlendMode("replace", "premultiplied")
 	elseif blend == "Normal" then
-		love.graphics.setBlendMode("alpha", "alphamultiply")
+		love.graphics.setBlendMode("alpha", "premultiplied")
 	elseif blend == "Multiply" then
 		love.graphics.setBlendMode("multiply", "premultiplied")
 		Render.in2SetAdvancedBlending("add", "add", "dstcolor", "dstcolor", "oneminussrcalpha", "oneminussrcalpha")
