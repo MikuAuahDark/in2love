@@ -125,8 +125,7 @@ end
 
 ---@return Inochi2D.Parameter[]
 function SimplePhysics:getAffectedParameters()
-	local param = self:param()
-	return param and {param} or {}
+	return {self:param()}
 end
 
 ---@param h number?
@@ -168,23 +167,21 @@ function SimplePhysics:updateOutputs()
 		-- Figure out the relative length. We can work this out directly in global space.
 		local relLength = Util.vec2Distance(self.output, self.anchor) / self.length
 
-		local paramVal
+		local paramValX, paramValY
 		if self.mapMode == "XY" then
 			local localPostNormX = localAngle[1] * relLength
 			local localPostNormY = localAngle[2] * relLength
-			paramVal = {
-				localPostNormX,
-				1 - localPostNormY -- Y goes up for params
-			}
+			paramValX = localPostNormX
+			paramValY = 1 - localPostNormY -- Y goes up for params
 		elseif self.mapMode == "AngleLength" then
 			local a = math.atan2(-localAngle[1], localAngle[2]) / math.pi
-			paramVal = {a, relLength}
+			paramValX, paramValY = a, relLength
 		else
 			error("invalid map mode")
 		end
 
-		self.param_.value[1] = paramVal[1] * self.outputScale[1]
-		self.param_.value[2] = paramVal[2] * self.outputScale[2]
+		self.param_.value[1] = paramValX * self.outputScale[1]
+		self.param_.value[2] = paramValY * self.outputScale[2]
 		self.param_:update()
 	end
 end
@@ -203,6 +200,8 @@ end
 
 function SimplePhysics:finalize()
 	self.param_ = self:puppet():findParameter(self.paramRef)
+	Driver.finalize(self)
+	self:reset()
 end
 
 function SimplePhysics:drawDebug()

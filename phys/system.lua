@@ -50,7 +50,7 @@ function PhysicsSystem:getState()
 
 	for _, ptr in ipairs(self.refs) do
 		vals[#vals+1] = ptr[1]
-		vals[#vals+2] = ptr[2]
+		vals[#vals+1] = ptr[2]
 	end
 
 	return vals
@@ -74,10 +74,9 @@ end
 ---@param h number
 function PhysicsSystem:tick(h)
 	local cur = self:getState()
-	local tmp = {}
+	-- local tmp = {}
 
 	for i = 1, #cur do
-		tmp[i] = 0
 		self.derivative[i] = 0
 	end
 	self.derivative[#cur + 1] = nil
@@ -93,16 +92,17 @@ function PhysicsSystem:tick(h)
 
 		if r ~= r or math.abs(r) == math.huge then
 			-- Simulation failed, revert
-			for j = 1, #cur do
+			for j = 1, #cur, 2 do
 				local ref = self.refs[math.floor((j - 1) / 2) + 1]
-				ref[j % 2 + 1] = cur[j]
+				ref[1] = cur[j]
+				ref[2] = cur[j + 1]
 			end
 
 			break
+		else
+			local ref = self.refs[math.floor((i - 1) / 2) + 1]
+			ref[(i - 1) % 2 + 1] = r
 		end
-
-		local ref = self.refs[math.floor((i - 1) / 2) + 1]
-		ref[i % 2 + 1] = r
 	end
 
 	self.t = self.t + h
@@ -114,9 +114,10 @@ end
 ---@param div number
 ---@private
 function PhysicsSystem:_doKStep(h, cur, kold, div)
-	for i = 1, #cur do
-		local ref = self.refs[math.floor((i - 1) / 2) + 1]
-		ref[i % 2 + 1] = cur[i] + h * kold[i] / 2
+	for i = 1, #cur, 2 do
+		local ref = self.refs[math.floor(i / 2) + 1]
+		ref[1] = cur[i] + h * kold[i] / div
+		ref[2] = cur[i + 1] + h * kold[i + 1] / div
 	end
 	self:eval(self.t + h / div)
 	return Util.copyArray(self.derivative)

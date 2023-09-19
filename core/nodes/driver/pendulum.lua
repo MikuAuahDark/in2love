@@ -21,6 +21,7 @@ function Pendulum:new(driver)
 	self.angle = {0, 0}
 	self.dAngle = {0, 0}
 
+	self:updateAnchor()
 	self:addVariable(self.angle)
 	self:addVariable(self.dAngle)
 end

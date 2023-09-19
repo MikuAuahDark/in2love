@@ -18,9 +18,10 @@ function SpringPendulum:new(driver)
 	PhysicsSystem.new(self)
 
 	self.driver = driver
-	self.bob = {driver.anchor[1], driver.anchor[2] + driver.length}
+	self.bob = {0, 0}
 	self.dBob = {0, 0}
 
+	self:updateAnchor()
 	self:addVariable(self.bob)
 	self:addVariable(self.dBob)
 end
@@ -56,8 +57,8 @@ function SpringPendulum:eval(t)
 	local dBobRotY = self.dBob[2] * offPosNorm[2] - self.dBob[1] * offPosNorm[1]
 	local ddBobRotX = dBobRotX * self.driver.angleDamping * critDampAngle
 	local ddBobRotY = dBobRotY * self.driver.lengthDamping * critDampLength
-	ddBob[1] = ddBob[1] + ddBobRotX * offPosNorm[2] - dBobRotY * offPosNorm[1]
-	ddBob[2] = ddBob[2] + ddBobRotY * offPosNorm[2] + dBobRotX * offPosNorm[1]
+	ddBob[1] = ddBob[1] - ddBobRotX * offPosNorm[2] - dBobRotY * offPosNorm[1]
+	ddBob[2] = ddBob[2] - ddBobRotY * offPosNorm[2] + dBobRotX * offPosNorm[1]
 
 	self:setD(self.dBob, ddBob)
 end
