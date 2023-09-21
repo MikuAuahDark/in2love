@@ -37,6 +37,7 @@ local Util = require(path..".util")
 ---@field public renderParameters boolean Whether parameters should be rendered
 ---@field public enableDrivers boolean Whether drivers should run
 ---@field public player Inochi2D.AnimationPlayer
+---@field public time number Not part of Inochi2D.
 local Puppet = Object:extend()
 
 -- Magic value meaning that the model has no thumbnail
@@ -268,6 +269,7 @@ function Puppet:new(root)
 	self.renderParameters = true
 	self.enableDrivers = true
 	self.player = AnimationPlayer(self)
+	self.time = 0
 
 	if root then
 		self:scanParts(self.root, true)
@@ -400,8 +402,10 @@ function Puppet:findNode(n, data)
 end
 
 ---Updates the nodes
----@param delta number?
+---@param delta number
 function Puppet:update(delta)
+	self.time = self.time + delta
+
 	-- Rest additive offsets
 	for _, parameter in ipairs(self.parameters) do
 		parameter:preUpdate()
@@ -729,6 +733,11 @@ end
 ---Gets the animation dictionary
 function Puppet:getAnimations()
 	return self.animations
+end
+
+---Not part of Inochi2D.
+function Puppet:currentTime()
+	return self.time
 end
 
 ---@alias Inochi2D.Puppet_Class

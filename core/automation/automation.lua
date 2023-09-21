@@ -1,7 +1,5 @@
 local path = (...):sub(1, -string.len(".core.automation.Automation") - 1)
 
-local love = require("love")
-
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.AutomationBinding_Class
@@ -58,11 +56,10 @@ function Automation:finalize(parent)
 end
 
 ---Updates and applies the automation to all the parameters that this automation is bound to
----@param dt number?
+---@param dt number
 function Automation:update(dt)
 	if self.enabled then
-		local delta = dt or love.timer.getDelta()
-		self:onUpdate(delta)
+		self:onUpdate(dt)
 	end
 end
 

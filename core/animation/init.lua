@@ -1,7 +1,5 @@
 local path = (...):sub(1, -string.len(".core.animation") - 1)
 
-local love = require("love")
-
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.UtilModule
@@ -148,7 +146,7 @@ function AnimationPlayer:play(animation, looping, blend)
 				self.prevAnimation.running = false
 
 				-- NOTE: We set this even if we might not use it
-				self.crossfadeStart = love.timer.getTime()
+				self.crossfadeStart = self.parent:currentTime()
 			else
 				self.prevAnimation = nil
 			end
@@ -325,7 +323,7 @@ function AnimationPlayer:stepMain(delta)
 		if self.crossfadeFrames <= 0 then
 			ct = 1
 		else
-			ct = ((love.timer.getTime() - self.crossfadeStart) / self.currAnimation.animation.timestep) / self.crossfadeFrames;
+			ct = ((self.parent:currentTime() - self.crossfadeStart) / self.currAnimation.animation.timestep) / self.crossfadeFrames;
 		end
 
 		-- If current animation is stopping
@@ -372,10 +370,8 @@ end
 ---Run an animation step
 ---
 ---Paused animations will automatically be skipped to save processing resources
----@param delta number?
+---@param delta number
 function AnimationPlayer:step(delta)
-	delta = delta or love.timer.getDelta()
-
 	if self.currAnimation and self.currAnimation.paused == false then
 		self:stepMain(delta)
 	end

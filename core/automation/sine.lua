@@ -1,7 +1,5 @@
 local path = (...):sub(1, -string.len(".core.automation.sine") - 1)
 
-local love = require("love")
-
 ---@type Inochi2D.Object
 local Object = require(path..".lib.classic")
 ---@type Inochi2D.Automation_Class
@@ -42,7 +40,7 @@ function SineAutomation:new(parent)
 	self.sineType = "Sin"
 
 	-- Not part of Inochi2D
-	self.theTime = love.timer.getTime()
+	self.theTime = parent:currentTime()
 end
 
 ---@param dt number
@@ -51,7 +49,9 @@ function SineAutomation:onUpdate(dt)
 
 	for _, binding in ipairs(self.bindings) do
 		-- "math" hackery
-		local wave = self:remapRange((math[self.sineType:lower()]((self.theTime * self.speed) + self.phase) + 1) / 2, binding.range)
+		---@type fun(x:number):number
+		local trigfunc = assert(math[self.sineType:lower()])
+		local wave = self:remapRange((trigfunc((self.theTime * self.speed) + self.phase) + 1) / 2, binding.range)
 		binding:addAxisOffset(wave)
 	end
 end

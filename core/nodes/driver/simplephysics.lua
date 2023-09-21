@@ -128,10 +128,9 @@ function SimplePhysics:getAffectedParameters()
 	return {self:param()}
 end
 
----@param h number?
+---@param h number
 function SimplePhysics:updateDriver(h)
 	assert(self.system)
-	h = h or love.timer.getDelta()
 
 	self:updateInputs()
 
