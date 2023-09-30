@@ -87,38 +87,25 @@ local function mat4quatrot(roll, pitch, yaw)
 	local zz = z ^ 2
 	local zw = z * w
 
-	local r00 = 1 - 2 * (yy + zz);
-	local r01 = 2 * (xy - zw);
-	local r02 = 2 * (xz + yw);
+	local r00 = 1 - 2 * (yy + zz)
+	local r01 = 2 * (xy - zw)
+	local r02 = 2 * (xz + yw)
 
-	local r10 = 2 * (xy + zw);
-	local r11 = 1 - 2 * (xx + zz);
-	local r12 = 2 * (yz - xw);
+	local r10 = 2 * (xy + zw)
+	local r11 = 1 - 2 * (xx + zz)
+	local r12 = 2 * (yz - xw)
 
-	local r20 = 2 * (xz - yw);
-	local r21 = 2 * (yz + xw);
-	local r22 = 1 - 2 * (xx + yy);
+	local r20 = 2 * (xz - yw)
+	local r21 = 2 * (yz + xw)
+	local r22 = 1 - 2 * (xx + yy)
 
 	-- LOVE lacking 3D transform functions makes this hilarious
 	return love.math.newTransform():setMatrix(
-		r00, r01, r02, 0,
-		r10, r11, r12, 0,
-		r20, r21, r22, 0,
+		-- FIXME: LOVE doesn't like when Z index goes beyond [-1, 1], so force Z rotation to 0
+		r00, r01, 0,   0,
+		r10, r11, 0,   0,
+		0,   0,   1,   0,
 		0,   0,   0,   1
-	)
-end
-
----@param x number
----@param y number
-local function mat4scale(x, y)
-	y = y or x
-
-	-- LOVE lacking 3D transform functions makes this hilarious
-	return love.math.newTransform():setMatrix(
-		x, 0, 0, 0,
-		0, y, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
 	)
 end
 
@@ -194,7 +181,7 @@ function Transform:update()
 	self.trs:reset()
 		:apply(mat4translate(self.translation[1], self.translation[2], self.translation[3]))
 		:apply(mat4quatrot(self.rotation[1], self.rotation[2], self.rotation[3]))
-		:apply(mat4scale(self.scale[1], self.scale[2]))
+		:scale(self.scale[1], self.scale[2])
 end
 
 function Transform:clear()
@@ -205,8 +192,9 @@ function Transform:clear()
 end
 
 function Transform:serialize()
+	local trans = {self.translation[1], self.translation[2], self.translation[3] - 1}
 	return {
-		trans = self.translation,
+		trans = trans,
 		rot = self.rotation,
 		scale = self.scale
 	}
@@ -216,6 +204,7 @@ function Transform:deserialize(t)
 	self.translation = t.trans
 	self.rotation = t.rot
 	self.scale = t.scale
+	self:update()
 end
 
 function Transform:clone()
