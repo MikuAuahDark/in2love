@@ -146,15 +146,15 @@ function Render.in2SetBlendMode(blend)
 		love.graphics.setBlendMode("multiply", "premultiplied")
 		Render.in2SetAdvancedBlending("add", "add", "dstcolor", "dstcolor", "oneminussrcalpha", "oneminussrcalpha")
 	elseif blend == "ColorDodge" then
-		love.graphics.setBlendMode("lighten", "alphamultiply")
+		love.graphics.setBlendMode("lighten", "premultiplied")
 		Render.in2SetAdvancedBlending("add", "add", "dstcolor", "dstcolor", "one", "one")
 	elseif blend == "LinearDodge" then
-		love.graphics.setBlendMode("add", "alphamultiply")
+		love.graphics.setBlendMode("add", "premultiplied")
 		Render.in2SetAdvancedBlending("add", "add", "one", "one", "one", "one")
 	elseif blend == "Screen" then
-		love.graphics.setBlendMode("screen", "alphamultiply")
+		love.graphics.setBlendMode("screen", "premultiplied")
 	elseif blend == "ClipToLower" then
-		love.graphics.setBlendMode("replace", "alphamultiply")
+		love.graphics.setBlendMode("replace", "premultiplied")
 		Render.in2SetAdvancedBlending("add", "add", "dstalpha", "dstalpha", "oneminussrcalpha", "oneminussrcalpha")
 	elseif blend == "SliceFromLower" then
 		love.graphics.setBlendMode("multiply", "premultiplied")
@@ -244,6 +244,7 @@ function Render.in2DrawMask(dodge, cb, thisArg)
 	love.graphics.stencil(stencil, "replace", dodge and 0 or 1, true)
 end
 
+---@param hasMask boolean?
 function Render.in2BeginMask(hasMask)
 	love.graphics.clear(false, hasMask and 0 or 1)
 end
@@ -257,7 +258,8 @@ function Render.in2EndMask()
 	love.graphics.setStencilTest()
 end
 
-function Render.in2BeginComposite()
+---@param mask boolean?
+function Render.in2BeginComposite(mask)
 	if not Render.isCompositing then
 		Render.compositeBounds[1], Render.compositeBounds[2], Render.compositeBounds[3], Render.compositeBounds[4] = 0, 0, 0, 0
 		love.graphics.setCanvas({
@@ -266,7 +268,7 @@ function Render.in2BeginComposite()
 			Render.compositeBumpmapCanvas:get(),
 			depthstencil = Render.stencilCanvas:get()
 		})
-		love.graphics.clear(DEFAULT_CLEAR, DEFAULT_CLEAR, DEFAULT_CLEAR)
+		love.graphics.clear(DEFAULT_CLEAR, DEFAULT_CLEAR, DEFAULT_CLEAR, false, false)
 		Render.isCompositing = true
 	end
 end
@@ -292,8 +294,13 @@ end
 
 function Render.in2MergeComposite()
 	if Render.currentShader then
-		Render.currentShader:send("emissive", Render.compositeEmissiveCanvas:get())
-		Render.currentShader:send("bumpmap", Render.compositeBumpmapCanvas:get())
+		if Render.currentShader:hasUniform("emissive") then
+			Render.currentShader:send("emissive", Render.compositeEmissiveCanvas:get())
+		end
+
+		if Render.currentShader:hasUniform("bumpmap") then
+			Render.currentShader:send("bumpmap", Render.compositeBumpmapCanvas:get())
+		end
 	end
 
 	love.graphics.push()
