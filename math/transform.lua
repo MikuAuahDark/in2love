@@ -204,6 +204,7 @@ function Transform:deserialize(t)
 	self.translation = t.trans
 	self.rotation = t.rot
 	self.scale = t.scale
+	self.translation[3] = self.translation[3] + 1
 	self:update()
 end
 
