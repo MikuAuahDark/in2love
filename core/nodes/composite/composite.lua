@@ -105,7 +105,21 @@ function Composite:scanPartsRecurse(node)
 end
 
 function Composite:renderMask()
-	-- TODO
+	--Render.in2BeginComposite(true)
+	Render.in2BeginMask(true)
+	Render.in2DrawMask(false, Composite.drawSelfMasked, self)
+	Render.in2EndMask()
+	--Render.in2EndComposite()
+
+	-- Render.in2ActivateMaskShader(self.threshold, self.opacity)
+	-- Render.in2SetBlendMode("Normal")
+	-- Render.in2MergeComposite()
+end
+
+function Composite:drawSelfMasked()
+	for _, child in ipairs(self.subParts) do
+		child:drawOneDirect(true)
+	end
 end
 
 function Composite:serialize()
